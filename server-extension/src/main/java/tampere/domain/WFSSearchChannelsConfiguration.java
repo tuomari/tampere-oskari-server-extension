@@ -19,7 +19,7 @@ public class WFSSearchChannelsConfiguration {
 	
 	
 	private int id = -1;
-	private String WFSLayerId;	
+	private int WFSLayerId;
 	private JSONObject topic;
 	private JSONObject desc;
 	private JSONArray paramsForSearch;
@@ -46,12 +46,12 @@ public class WFSSearchChannelsConfiguration {
 	}
 
 
-	public String getWFSLayerId() {
+	public int getWFSLayerId() {
 		return WFSLayerId;
 	}
 
 
-	public void setWFSLayerId(String wFSLayerId) {
+	public void setWFSLayerId(int wFSLayerId) {
 		WFSLayerId = wFSLayerId;
 	}
 

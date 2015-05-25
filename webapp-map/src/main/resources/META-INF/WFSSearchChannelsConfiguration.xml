@@ -11,23 +11,23 @@
     <resultMap class="WFSSearchChannelsConfiguration" id="WFSSearchChannelsConfiguration">
         <result property="id" column="id"/>
         <result property="WFSLayerId" column="wfs_layer_id"/>
-        <result property="topic" column="topic"/>
-        <result property="desc" column="desc"/>
-        <result property="paramsForSearch" column="params_for_search"/>
+        <result property="topic" column="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <result property="desc" column="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <result property="paramsForSearch" column="params_for_search" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
     </resultMap>
 
     <parameterMap id="ChannelInsertParameter" class="WFSSearchChannelsConfiguration">
-       <parameter property="WFSLayerId"/>
-       <parameter property="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-       <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-       <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+       <parameter property="WFSLayerId" />
+       <parameter property="topic" />
+       <parameter property="desc" />
+       <parameter property="paramsForSearch" />
     </parameterMap>
 
     
     <parameterMap id="ChannelUpdateParameter" class="WFSSearchChannelsConfiguration">
-        <parameter property="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-        <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-        <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <parameter property="topic" />
+        <parameter property="desc" />
+        <parameter property="paramsForSearch" />
         <parameter property="id"/>
     </parameterMap>
 
@@ -37,13 +37,14 @@
     </cacheModel>
 
     <select id="maxId" resultClass="int">
-        select max(id) from oskari_wfs_search_channels;
+        SELECT max(id) FROM oskari_wfs_search_channels;
     </select>
 
     <statement id="findChannels" resultMap="WFSSearchChannelsConfiguration">
         SELECT
         *
-        FROM oskari_wfs_search_channels;
+        FROM oskari_wfs_search_channels
+        ORDER BY id ASC;
     </statement>
     
     <statement id="delete" parameterClass="java.lang.Long">

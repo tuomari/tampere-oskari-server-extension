@@ -29,11 +29,46 @@ public class SearchWFSChannelHelper {
 		for(int i=0;i<channels.size();i++){
 			WFSSearchChannelsConfiguration channel = channels.get(i);
 			JSONObject channelJSON = channel.getAsJSONObject();
-			channelsJSONArray.put(channel);
+			channelsJSONArray.put(channelJSON);
 		}
 	   	
 	   	job.put("channels", channelsJSONArray);
 	   	 
 	   	return job;
+	}
+	
+	/**
+	 * Delete selected channel
+	 * @param channelId
+	 */
+	public static JSONObject delete(final int channelId) {
+		JSONObject job = new JSONObject();
+		try{
+			channelService.delete(channelId);
+			job.put("success", true);
+		} catch (Exception e) {
+			try{
+				job.put("success", false);
+			} catch (Exception ex) {}
+		}
+		return job;
+	}
+	
+	/**
+	 * Add WFS channel
+	 * @param channelId
+	 */
+	public static JSONObject insert(final WFSSearchChannelsConfiguration channel) {
+		JSONObject job = new JSONObject();
+		try{
+			int newId = channelService.insert(channel);
+			job.put("success", newId > 0);
+		} catch (Exception e) {
+			log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+			try{
+				job.put("success", false);
+			} catch (Exception ex) {}
+		}
+		return job;
 	}
 }
