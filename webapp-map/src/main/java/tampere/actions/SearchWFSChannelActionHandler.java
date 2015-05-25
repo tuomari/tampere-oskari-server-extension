@@ -1,19 +1,14 @@
 package tampere.actions;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import tampere.helpers.SearchWFSChannelHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
-import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("SearchWFSChannel")
 public class SearchWFSChannelActionHandler extends RestActionHandler {
@@ -31,6 +26,8 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     	 try {
     		 ResponseHelper.writeResponse(params, SearchWFSChannelHelper.getChannels());
     	 } catch (Exception ex){
+    		 log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));
+    		 
     		 throw new ActionParamsException("Couldn't get WFS search channels");
     	 }
      }
