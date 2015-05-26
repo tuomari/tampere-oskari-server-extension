@@ -12,22 +12,23 @@
         <result property="id" column="id"/>
         <result property="WFSLayerId" column="wfs_layer_id"/>
         <result property="topic" column="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-        <result property="desc" column="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <result property="desc" column="description" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
         <result property="paramsForSearch" column="params_for_search" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
     </resultMap>
 
     <parameterMap id="ChannelInsertParameter" class="WFSSearchChannelsConfiguration">
        <parameter property="WFSLayerId" />
-       <parameter property="topic" />
-       <parameter property="desc" />
-       <parameter property="paramsForSearch" />
+       <parameter property="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+       <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+       <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
     </parameterMap>
 
     
     <parameterMap id="ChannelUpdateParameter" class="WFSSearchChannelsConfiguration">
-        <parameter property="topic" />
-        <parameter property="desc" />
-        <parameter property="paramsForSearch" />
+   		<parameter property="WFSLayerId" />
+        <parameter property="topic" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
         <parameter property="id"/>
     </parameterMap>
 
@@ -55,17 +56,18 @@
         INSERT INTO oskari_wfs_search_channels (
         wfs_layer_id,
         topic,
-        desc,
+        description,
         params_for_search)
         values (?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="ChannelUpdateParameter">
-        UPDATE portti_wfs_layer
+   		UPDATE oskari_wfs_search_channels
         SET
+        wfs_layer_id = ?,
         topic = ?,
-        desc = ?,
-        params_for_search
+        description = ?,
+        params_for_search = ?
         WHERE id = ?
     </statement>
 </sqlMap>

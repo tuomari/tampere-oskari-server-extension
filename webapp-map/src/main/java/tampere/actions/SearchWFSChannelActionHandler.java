@@ -59,10 +59,23 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
      
      @Override
      public void handlePost(ActionParameters params) throws ActionException {
-    	 // TODO UPDATE CHANNEL
     	 
     	 // Only admin user
     	 params.requireAdminUser();
+       	 
+	   	 try {
+	   		WFSSearchChannelsConfiguration conf = new WFSSearchChannelsConfiguration();
+	   		conf.setWFSLayerId(ConversionHelper.getInt(params.getRequiredParam(PARAM_WFS_ID), -1));
+	   		conf.setTopic(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_TOPIC), "")));
+	   		conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC),"")));   		
+	   		conf.setParamsForSearch(new JSONArray(ConversionHelper.getString(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH),"")));
+	   		conf.setId(ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1));
+	   		
+	   		ResponseHelper.writeResponse(params, SearchWFSChannelHelper.update(conf));
+	   	 } catch (Exception ex){
+	   		 log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));    		 
+	   		 throw new ActionParamsException("Couldn't update WFS search channel");
+	   	 }
      }
      
      @Override
@@ -73,11 +86,10 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 	   	 try {
 	   		WFSSearchChannelsConfiguration conf = new WFSSearchChannelsConfiguration();
 	   		conf.setWFSLayerId(ConversionHelper.getInt(params.getRequiredParam(PARAM_WFS_ID), -1));
-	   		conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC),"")));
 	   		conf.setTopic(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_TOPIC), "")));
+	   		conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC),"")));   		
 	   		conf.setParamsForSearch(new JSONArray(ConversionHelper.getString(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH),"")));
-	   		log.error(conf.getAsJSONObject().toString(4));
-	   		
+
 	   		ResponseHelper.writeResponse(params, SearchWFSChannelHelper.insert(conf));
 	   	 } catch (Exception ex){
 	   		 log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));    		 

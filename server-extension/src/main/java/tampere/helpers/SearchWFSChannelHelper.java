@@ -56,13 +56,31 @@ public class SearchWFSChannelHelper {
 	
 	/**
 	 * Add WFS channel
-	 * @param channelId
+	 * @param channel
 	 */
 	public static JSONObject insert(final WFSSearchChannelsConfiguration channel) {
 		JSONObject job = new JSONObject();
 		try{
 			int newId = channelService.insert(channel);
 			job.put("success", newId > 0);
+		} catch (Exception e) {
+			log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+			try{
+				job.put("success", false);
+			} catch (Exception ex) {}
+		}
+		return job;
+	}
+	
+	/**
+	 * Update WFS channel
+	 * @param channel
+	 */
+	public static JSONObject update(final WFSSearchChannelsConfiguration channel) {
+		JSONObject job = new JSONObject();
+		try{
+			channelService.update(channel);
+			job.put("success", true);
 		} catch (Exception e) {
 			log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 			try{

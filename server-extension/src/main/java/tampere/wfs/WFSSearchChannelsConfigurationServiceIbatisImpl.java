@@ -55,6 +55,7 @@ public class WFSSearchChannelsConfigurationServiceIbatisImpl extends BaseIbatisS
             client = SqlMapClientBuilder.buildSqlMapClient(reader);
             return client;
         } catch (Exception e) {
+        	log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
             throw new RuntimeException("Failed to retrieve SQL client", e);
         } finally {
             if (reader != null) {
@@ -76,6 +77,7 @@ public class WFSSearchChannelsConfigurationServiceIbatisImpl extends BaseIbatisS
             session.delete(getNameSpace() + ".delete", channel_id);
             session.commitTransaction();
         } catch (Exception e) {
+        	log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
             new RuntimeException("Error deleting channel with id:" + Long.toString(channel_id), e);
         } finally {
             endSession(session);
@@ -92,6 +94,7 @@ public class WFSSearchChannelsConfigurationServiceIbatisImpl extends BaseIbatisS
             client.commitTransaction();
             return id;
         } catch (Exception e) {
+        	log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
             throw new RuntimeException("Failed to insert", e);
         } finally {
             if (client != null) {
@@ -106,6 +109,7 @@ public class WFSSearchChannelsConfigurationServiceIbatisImpl extends BaseIbatisS
     	try {
             getSqlMapClient().update(getNameSpace() + ".update", channel);
         } catch (Exception e) {
+        	log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
             throw new RuntimeException("Failed to update", e);
         }
     };
