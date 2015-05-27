@@ -16,6 +16,7 @@ public class WFSSearchChannelsConfiguration {
     protected final static String PARAM_TOPIC = "topic";
     protected final static String PARAM_DESC = "desc";
     protected final static String PARAM_PARAMS_FOR_SEARCH = "params_for_search";
+    protected final static String PARAM_IS_DEFAULT = "is_default";
 	
 	
 	private int id = -1;
@@ -23,6 +24,7 @@ public class WFSSearchChannelsConfiguration {
 	private JSONObject topic;
 	private JSONObject desc;
 	private JSONArray paramsForSearch;
+	private Boolean isDefault;
 	
 	
 	public JSONObject getAsJSONObject() {
@@ -31,7 +33,8 @@ public class WFSSearchChannelsConfiguration {
 		JSONHelper.putValue(root, PARAM_WFS_LAYER_ID, this.getWFSLayerId());
 		JSONHelper.putValue(root, PARAM_TOPIC, this.getTopic());
 		JSONHelper.putValue(root, PARAM_DESC, this.getDesc());
-		JSONHelper.putValue(root, PARAM_PARAMS_FOR_SEARCH, this.getParamsForSearch());		
+		JSONHelper.putValue(root, PARAM_PARAMS_FOR_SEARCH, this.getParamsForSearch());
+		JSONHelper.putValue(root, PARAM_IS_DEFAULT, this.getIsDefault());
 		return root;
 	}
 
@@ -83,6 +86,16 @@ public class WFSSearchChannelsConfiguration {
 
 	public void setParamsForSearch(JSONArray paramsForSearch) {
 		this.paramsForSearch = paramsForSearch;
+	}
+
+
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
 	}
 
 }
