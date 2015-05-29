@@ -1,5 +1,6 @@
 package tampere.helpers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,6 +10,8 @@ import org.json.JSONObject;
 import tampere.domain.WFSSearchChannelsConfiguration;
 import tampere.wfs.WFSSearchChannelsConfigurationService;
 import tampere.wfs.WFSSearchChannelsConfigurationServiceIbatisImpl;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -19,9 +22,11 @@ public class SearchWFSChannelHelper {
 	
 	/**
 	 * Get WFS channels
+	 * @param string 
+	 * @param user 
 	 * @return
 	 */
-	public static JSONObject getChannels() throws JSONException{
+	public static JSONObject getChannels(User user, String lang) throws JSONException{
 		JSONObject job = new JSONObject();
 		List<WFSSearchChannelsConfiguration> channels = channelService.findChannels();
 		JSONArray channelsJSONArray = new JSONArray();
@@ -29,7 +34,14 @@ public class SearchWFSChannelHelper {
 		for(int i=0;i<channels.size();i++){
 			WFSSearchChannelsConfiguration channel = channels.get(i);
 			JSONObject channelJSON = channel.getAsJSONObject();
-			channelsJSONArray.put(channelJSON);
+			List<String> layerIds = new ArrayList<String>();
+			layerIds.add(String.valueOf(channel.getWFSLayerId())); 
+			JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, user, lang, false, false);
+			JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
+
+			if(layers.length() > 0){
+				channelsJSONArray.put(channelJSON);
+			}
 		}
 	   	
 	   	job.put("channels", channelsJSONArray);

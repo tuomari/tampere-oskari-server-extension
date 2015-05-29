@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import tampere.domain.WFSSearchChannelsConfiguration;
 import tampere.helpers.SearchWFSChannelHelper;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -29,10 +30,10 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
      @Override
      public void handleGet(ActionParameters params) throws ActionException {
     	 // Only admin user
-    	 params.requireAdminUser();
+    	 //params.requireAdminUser(); 
     	 
     	 try {
-    		 ResponseHelper.writeResponse(params, SearchWFSChannelHelper.getChannels());
+    		 ResponseHelper.writeResponse(params, SearchWFSChannelHelper.getChannels(params.getUser(), params.getLocale().getLanguage()));
     	 } catch (Exception ex){
     		 log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));    		 
     		 throw new ActionParamsException("Couldn't get WFS search channels");
