@@ -1,5 +1,6 @@
 package fi.nls.oskari.search;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
@@ -16,6 +17,7 @@ import fi.nls.oskari.log.Logger;
 import java.net.URLEncoder;
 
 import fi.nls.oskari.util.PropertyUtil;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -57,6 +59,7 @@ public class WfsSearchChannel extends SearchChannel {
         StringBuffer buf = new StringBuffer(serviceURL);
         String searchStr = URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8");
         log.debug("[tre] Search string: " + searchStr);
+        log.debug("[tre] Channels: " + searchCriteria.getParam("channelIds").toString());
 
         if (isKiinteistoTunnus(searchStr)) {
             // urls copied from the browser. tested with urlencoder and UTF-8 - no dice.
