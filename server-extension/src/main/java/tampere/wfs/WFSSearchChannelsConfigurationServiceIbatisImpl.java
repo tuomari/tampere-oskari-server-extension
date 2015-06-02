@@ -28,6 +28,12 @@ public class WFSSearchChannelsConfigurationServiceIbatisImpl extends BaseIbatisS
         return channels;
     }
     
+    public WFSSearchChannelsConfiguration findChannelById(final int channelId) {
+    	long channel_id = Long.valueOf(channelId);
+        WFSSearchChannelsConfiguration channel = queryForObject(getNameSpace() + ".findChannelById", channel_id);
+        return channel;
+    }
+    
     
     /*
      * The purpose of this method is to allow many SqlMapConfig.xml files in a

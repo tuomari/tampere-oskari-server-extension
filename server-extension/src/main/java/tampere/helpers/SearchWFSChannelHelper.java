@@ -50,6 +50,22 @@ public class SearchWFSChannelHelper {
 	}
 	
 	/**
+	 * Get channel by id
+	 * @param channelIds
+	 * @return
+	 * @throws JSONException 
+	 */
+	public static List<WFSSearchChannelsConfiguration> getChannelById(JSONArray channelIds) throws JSONException{
+
+		List<WFSSearchChannelsConfiguration> channels = new ArrayList<WFSSearchChannelsConfiguration>();
+		for (int i = 0; i < channelIds.length(); i++) {
+			channels.add(channelService.findChannelById(channelIds.getInt(i)));
+		}
+	   	 
+	   	return channels;
+	}
+	
+	/**
 	 * Delete selected channel
 	 * @param channelId
 	 */

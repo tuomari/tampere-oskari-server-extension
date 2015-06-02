@@ -1,4 +1,4 @@
-package fi.nls.oskari.search;
+package tampere.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;

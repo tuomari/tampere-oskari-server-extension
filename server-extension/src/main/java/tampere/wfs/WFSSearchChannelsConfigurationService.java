@@ -9,6 +9,7 @@ import fi.nls.oskari.service.db.BaseService;
 
 public interface WFSSearchChannelsConfigurationService  extends BaseService<WFSSearchChannelsConfiguration>{
     public List<WFSSearchChannelsConfiguration> findChannels();
+    public WFSSearchChannelsConfiguration findChannelById(final int channelId);
     public void delete(final int channelId);
     public int insert(final WFSSearchChannelsConfiguration channel);
     public void update(final WFSSearchChannelsConfiguration channel);

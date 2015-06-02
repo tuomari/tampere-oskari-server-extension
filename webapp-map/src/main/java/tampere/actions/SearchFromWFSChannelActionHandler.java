@@ -1,6 +1,7 @@
 package tampere.actions;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -17,6 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tampere.domain.WFSSearchChannelsConfiguration;
+import tampere.helpers.SearchWFSChannelHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +32,15 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
     private static final String PARAM_SEARCH_KEY = "searchKey";
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_CHANNELIDS_KEY = "channelIds";
+    private static final String PARAM_LAYERNAME = "layerName";
+    private static final String PARAM_SRS = "srs_name";
+    private static final String PARAM_VERSION = "version";
+    private static final String PARAM_URL = "wmsUrl";
+    private static final String PARAM_REALNAME = "name";
+    public static final String PARAM_CHANNELS = "channels";
+    private static final String PARAM_ADMIN = "admin";
+    private static final String PARAM_USERNAME = "username";
+    private static final String PARAM_PASSWORD = "password";
 
     private String[] channels = new String[0];
 
@@ -44,20 +57,35 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
         final String epsg = params.getHttpParam(PARAM_EPSG_KEY);
         
         JSONArray channelIds;
+        List<WFSSearchChannelsConfiguration> channelsParams = new ArrayList<WFSSearchChannelsConfiguration>();
         
 		try {
-			channelIds = new JSONArray(params.getHttpParam(PARAM_CHANNELIDS_KEY));
 			
-			for (int i = 0; i < channelIds.length(); i++) {
-						
+			channelIds = new JSONArray(params.getHttpParam(PARAM_CHANNELIDS_KEY));
+			List<WFSSearchChannelsConfiguration> channels = SearchWFSChannelHelper.getChannelById(channelIds);
+			
+			for (int i = 0; i < channels.size(); i++) {
+				WFSSearchChannelsConfiguration channel = channels.get(i);
 				List<String> layerIds = new ArrayList<String>();
-				layerIds.add(String.valueOf(channelIds.get(i))); 
+				layerIds.add(String.valueOf(channel.getWFSLayerId())); 
 				JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage(), false, false);
 				JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
-				log.debug(layers.toString());
+				//log.debug(layers.toString(4));
+				if(layers.length() == 1){
+					if(layers.getJSONObject(0).has(PARAM_ADMIN)){
+						JSONObject adminJSON = layers.getJSONObject(0).getJSONObject(PARAM_ADMIN);
+						channel.setUsername(adminJSON.getString(PARAM_USERNAME));
+						channel.setPassword(adminJSON.getString(PARAM_PASSWORD));
+					}
+					channel.setLayerName(layers.getJSONObject(0).getString(PARAM_LAYERNAME));
+					channel.setSrs(layers.getJSONObject(0).getString(PARAM_SRS));
+					channel.setVersion(layers.getJSONObject(0).getString(PARAM_VERSION));
+					channel.setUrl(layers.getJSONObject(0).getString(PARAM_URL));
+					channel.setRealName(layers.getJSONObject(0).getJSONObject(PARAM_REALNAME));
+					channelsParams.add(channel);
+				}
+				
 			}
-			
-			
 			
 		} catch (JSONException ex) {
 			 log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));    		 
@@ -75,7 +103,9 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
             final SearchCriteria sc = new SearchCriteria();
             sc.setSearchString(search);
             sc.setSRS(epsg);  // eg. EPSG:3067
-            sc.addParam("channelIds", channelIds);
+            sc.addParam(PARAM_CHANNELS, channelsParams);
+            
+            //sc.addParam(key, value);
 
             sc.setLocale(locale.getLanguage());
 

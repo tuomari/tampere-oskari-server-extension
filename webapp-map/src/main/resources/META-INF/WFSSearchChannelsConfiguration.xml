@@ -51,6 +51,13 @@
         ORDER BY id ASC;
     </statement>
     
+     <statement id="findChannelById" resultMap="WFSSearchChannelsConfiguration" parameterClass="java.lang.Long">
+        SELECT
+        *
+        FROM oskari_wfs_search_channels
+        WHERE id=#channel_id#;
+    </statement>
+    
     <statement id="delete" parameterClass="java.lang.Long">
         DELETE FROM oskari_wfs_search_channels WHERE id=#channel_id#;
     </statement>

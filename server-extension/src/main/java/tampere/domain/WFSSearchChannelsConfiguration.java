@@ -25,6 +25,13 @@ public class WFSSearchChannelsConfiguration {
 	private JSONObject desc;
 	private JSONArray paramsForSearch;
 	private Boolean isDefault;
+	private String layerName;
+	private String url;
+	private String srs;
+	private String version;
+	private JSONObject realName;
+	private String username;
+	private String password;
 	
 	
 	public JSONObject getAsJSONObject() {
@@ -36,6 +43,13 @@ public class WFSSearchChannelsConfiguration {
 		JSONHelper.putValue(root, PARAM_PARAMS_FOR_SEARCH, this.getParamsForSearch());
 		JSONHelper.putValue(root, PARAM_IS_DEFAULT, this.getIsDefault());
 		return root;
+	}
+	
+	public Boolean isAutenticated(){
+		if(username!=null && !username.isEmpty() && password!=null && !password.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 
@@ -96,6 +110,76 @@ public class WFSSearchChannelsConfiguration {
 
 	public void setIsDefault(Boolean isDefault) {
 		this.isDefault = isDefault;
+	}
+
+
+	public String getLayerName() {
+		return layerName;
+	}
+
+
+	public void setLayerName(String layerName) {
+		this.layerName = layerName;
+	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+	public String getSrs() {
+		return srs;
+	}
+
+
+	public void setSrs(String srs) {
+		this.srs = srs;
+	}
+
+
+	public String getVersion() {
+		return version;
+	}
+
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+
+	public JSONObject getRealName() {
+		return realName;
+	}
+
+
+	public void setRealName(JSONObject realName) {
+		this.realName = realName;
+	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
