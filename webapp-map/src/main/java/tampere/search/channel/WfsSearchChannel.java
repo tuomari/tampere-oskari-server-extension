@@ -170,9 +170,7 @@ public class WfsSearchChannel extends SearchChannel {
 
                     if(loopJSONObject.has("geometry")) {
 	                    JSONObject featuresObj_geometry = loopJSONObject.getJSONObject("geometry");
-	                    log.debug("==========================================");
-	                    log.debug(featuresObj_geometry);
-	                    log.debug("==========================================");
+
 	                    String geomType = featuresObj_geometry.getString("type").toUpperCase();
 	                    GeometryJSON geom = new GeometryJSON(3);
 	                    if (geomType.equals(GT_GEOM_POLYGON)) {
