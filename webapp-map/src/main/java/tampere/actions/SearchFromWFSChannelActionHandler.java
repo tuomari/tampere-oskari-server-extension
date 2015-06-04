@@ -70,7 +70,7 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
 				layerIds.add(String.valueOf(channel.getWFSLayerId())); 
 				JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage(), false, false);
 				JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
-				//log.debug(layers.toString(4));
+
 				if(layers.length() == 1){
 					if(layers.getJSONObject(0).has(PARAM_ADMIN)){
 						JSONObject adminJSON = layers.getJSONObject(0).getJSONObject(PARAM_ADMIN);
@@ -104,8 +104,6 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
             sc.setSearchString(search);
             sc.setSRS(epsg);  // eg. EPSG:3067
             sc.addParam(PARAM_CHANNELS, channelsParams);
-            
-            //sc.addParam(key, value);
 
             sc.setLocale(locale.getLanguage());
 

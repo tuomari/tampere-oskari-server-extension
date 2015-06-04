@@ -104,7 +104,7 @@ public class WfsSearchChannel extends SearchChannel {
         	
         	for(int j=0;j<params.length();j++){
         		String param = params.getString(j);
-        		filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!'>" +
+        		filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
         				"<PropertyName>"+param+"</PropertyName><Literal>*"+ searchStr +
         				"*</Literal></PropertyIsLike>"
         				);
