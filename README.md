@@ -50,7 +50,7 @@ actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
 ## Usage
 
 * Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop_server
-* Run **mvn clean install** in tampere-oskari-server-extension folder
+* Run _mvn clean install_ in tampere-oskari-server-extension folder
 * Clone https://github.com/nls-oskari/oskari-spring
 * Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml: 
 ```Xml
@@ -60,7 +60,7 @@ actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
-* Run **mvn clean install** in oskari-spring folder
+* Run _mvn clean install_ in oskari-spring folder
 * Stop Jetty
 * Copy oskari-spring/webapp-spring/target/spring-map.war to your Jetty installation webapps folder (and rename war file if you want)
 * Start Jetty
