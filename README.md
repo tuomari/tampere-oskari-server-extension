@@ -6,7 +6,7 @@ Extends Oskari server functionality to serve WFS searchs.
 ## Usage
 
 1. Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop_server
-2. Run _mvn clean install_ in tampere-oskari-server-extension folder
+2. Run *mvn clean install* in tampere-oskari-server-extension folder
 3. Clone https://github.com/nls-oskari/oskari-spring
 4. Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml:
 ```Xml
@@ -16,7 +16,7 @@ Extends Oskari server functionality to serve WFS searchs.
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
-5. Run _mvn clean install_ in oskari-spring folder
+5. Run *mvn clean install* in oskari-spring folder
 6. Copy oskari-spring/webapp-spring/target/spring-map.war to your Jetty installation webapps folder
 
 ## Dependencies
