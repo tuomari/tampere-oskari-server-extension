@@ -47,11 +47,25 @@ actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
 ```
 
 
-## Usage
+## Installation
 
 * Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop_server
+```Bash
+git clone https://github.com/dimenteq/tampere-oskari-server-extension.git
+```
+* Change develop_server branch
+```
+git checkout develop_server
+```
 * Run _mvn clean install_ in tampere-oskari-server-extension folder
 * Clone https://github.com/nls-oskari/oskari-spring
+```Bash
+git clone https://github.com/nls-oskari/oskari-spring.git
+```
+* Change master branch
+```Bash
+git checkout master
+```
 * Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml: 
 ```Xml
 <dependency>
