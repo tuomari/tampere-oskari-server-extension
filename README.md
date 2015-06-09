@@ -49,7 +49,6 @@ search.channels.default=WFSSEARCH_CHANNEL
 actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
 ```
 
-
 ## Installation
 
 * Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop_server
@@ -86,6 +85,12 @@ git checkout master
 * Run mvn clean install in oskari-spring folder
 ```Bash
 mvn clean install
+```
+** If you see following error "Could not resolve dependencies for project fi.nls.oskari.spring:webapp.map:w
+ar:1.2.0-SNAPSHOT: Could not find artifact", fix this to editin again oskari-spring/webapp-spring/pom.xml file
+```Bash
+# Remove following line
+<version>1.2.0-SNAPSHOT</version>
 ```
 * Stop Jetty
 * Copy oskari-spring/webapp-spring/target/spring-map.war to your Jetty installation webapps folder (and rename war file if you want)
