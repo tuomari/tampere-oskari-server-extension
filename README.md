@@ -57,6 +57,7 @@ git clone https://github.com/dimenteq/tampere-oskari-server-extension.git
 ```
 cd tampere-oskari-server-extension
 git checkout develop_server
+cd ..
 ```
 * Run _mvn clean install_ in tampere-oskari-server-extension folder
 * Clone https://github.com/nls-oskari/oskari-spring
@@ -67,6 +68,7 @@ git clone https://github.com/nls-oskari/oskari-spring.git
 ```Bash
 cd oskari-spring
 git checkout master
+cd ..
 ```
 * Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml: 
 ```Xml
