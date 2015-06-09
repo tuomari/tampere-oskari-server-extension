@@ -35,7 +35,7 @@ INSERT INTO portti_bundle values((select max(id)+1 from portti_bundle),'admin-wf
 }');
 
 CREATE SEQUENCE oskari_wfs_search_channel_seq
-  INCREMENT 1
+  INCREMENT 1;
 ```
 
 #### oskari-ext.properties file changes
