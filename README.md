@@ -64,6 +64,7 @@ mvn clean install
 ```
 * Clone https://github.com/nls-oskari/oskari-spring
 ```Bash
+cd ..
 git clone https://github.com/nls-oskari/oskari-spring.git
 ```
 * Change master branch
