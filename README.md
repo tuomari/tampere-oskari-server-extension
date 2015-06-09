@@ -2,7 +2,7 @@
 
 Tampere Oskari server extension
 
-Extends Oskari server functionality to serve WFS searchs.
+Extends Oskari server functionality to serve WFS search.
 
 ## Prerequisites
 
