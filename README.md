@@ -57,9 +57,11 @@ git clone https://github.com/dimenteq/tampere-oskari-server-extension.git
 ```
 cd tampere-oskari-server-extension
 git checkout develop_server
-cd ..
 ```
-* Run _mvn clean install_ in tampere-oskari-server-extension folder
+* Run mvn clean install in tampere-oskari-server-extension folder
+```Bash
+mvn clean install
+```
 * Clone https://github.com/nls-oskari/oskari-spring
 ```Bash
 git clone https://github.com/nls-oskari/oskari-spring.git
@@ -68,9 +70,8 @@ git clone https://github.com/nls-oskari/oskari-spring.git
 ```Bash
 cd oskari-spring
 git checkout master
-cd ..
 ```
-* Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml: 
+* Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml (edit file): 
 ```Xml
 <dependency>
     <groupId>fi.tampere.oskari</groupId>
@@ -78,7 +79,10 @@ cd ..
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
-* Run _mvn clean install_ in oskari-spring folder
+* Run mvn clean install in oskari-spring folder
+```Bash
+mvn clean install
+```
 * Stop Jetty
 * Copy oskari-spring/webapp-spring/target/spring-map.war to your Jetty installation webapps folder (and rename war file if you want)
 * Start Jetty
