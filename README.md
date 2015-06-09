@@ -35,6 +35,8 @@ CREATE SEQUENCE oskari_wfs_search_channel_seq
   INCREMENT 1
 ```
 #### oskari-ext.properties file changes
+```Shell
 search.channel.WFSSEARCH_CHANNEL.maxFeatures = 100
 search.channels.default=WFSSEARCH_CHANNEL
 actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
+```
