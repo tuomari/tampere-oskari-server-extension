@@ -9,7 +9,7 @@ Extends Oskari server functionality to serve WFS searchs.
 This extension needs new front-end codes of Oskari (see tampere bundles in https://github.com/dimenteq/tampere-oskari).
 
 ### Back-end
-#### New table and sequence.
+#### New table and sequence
 ```PLpgSQL
 INSERT INTO portti_bundle values((select max(id)+1 from portti_bundle),'admin-wfs-search-channel','{}','{}',' {
 	"instanceProps": {
