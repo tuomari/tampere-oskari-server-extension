@@ -41,6 +41,8 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
     private static final String PARAM_ADMIN = "admin";
     private static final String PARAM_USERNAME = "username";
     private static final String PARAM_PASSWORD = "password";
+    private static final String DEFAULT_SRS = "EPSG:3067";
+    private static final String DEFAULT_VERSION = "1.1.0";
 
     private String[] channels = new String[0];
 
@@ -78,8 +80,16 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
 						channel.setPassword(adminJSON.getString(PARAM_PASSWORD));
 					}
 					channel.setLayerName(layers.getJSONObject(0).getString(PARAM_LAYERNAME));
-					channel.setSrs(layers.getJSONObject(0).getString(PARAM_SRS));
-					channel.setVersion(layers.getJSONObject(0).getString(PARAM_VERSION));
+					if(layers.getJSONObject(0).has(PARAM_SRS)){
+						channel.setSrs(layers.getJSONObject(0).getString(PARAM_SRS));
+					} else {
+						channel.setSrs(layers.getJSONObject(0).getString(DEFAULT_SRS));
+					}
+					if(layers.getJSONObject(0).has(PARAM_VERSION)){
+						channel.setVersion(layers.getJSONObject(0).getString(PARAM_VERSION));
+					} else {
+						channel.setVersion(layers.getJSONObject(0).getString(DEFAULT_VERSION));
+					}
 					channel.setUrl(layers.getJSONObject(0).getString(PARAM_URL));
 					channel.setRealName(layers.getJSONObject(0).getJSONObject(PARAM_REALNAME));
 					channelsParams.add(channel);

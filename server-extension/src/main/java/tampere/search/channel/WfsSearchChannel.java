@@ -1,41 +1,33 @@
 package tampere.search.channel;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.service.search.ChannelSearchResult;
-import fi.mml.portti.service.search.SearchCriteria;
-import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.geo.Point;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.log.Logger;
-
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
-
-import fi.nls.oskari.util.PropertyUtil;
 
 import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import com.vividsolutions.jts.geom.Geometry;
+import tampere.actions.SearchFromWFSChannelActionHandler;
+import tampere.domain.WFSSearchChannelsConfiguration;
+
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-import tampere.actions.SearchFromWFSChannelActionHandler;
-import tampere.domain.WFSSearchChannelsConfiguration;
+import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.SearchCriteria;
+import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.search.channel.SearchChannel;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 @Oskari(WfsSearchChannel.ID)
 public class WfsSearchChannel extends SearchChannel {
@@ -44,7 +36,6 @@ public class WfsSearchChannel extends SearchChannel {
      * logger
      */
     private Logger log = LogFactory.getLogger(this.getClass());
-    private String serviceURL = null;
     public static final String ID = "WFSSEARCH_CHANNEL";
     
     public static final String PARAM_GEOMETRY = "GEOMETRY";
