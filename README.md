@@ -86,8 +86,8 @@ git checkout master
 ```Bash
 mvn clean install
 ```
-** If you see following error "Could not resolve dependencies for project fi.nls.oskari.spring:webapp.map:w
-ar:1.2.0-SNAPSHOT: Could not find artifact", fix this to editin again oskari-spring/webapp-spring/pom.xml file
+* If you see following error "Could not resolve dependencies for project fi.nls.oskari.spring:webapp.map:w
+ar:1.2.0-SNAPSHOT: Could not find artifact", fix this to edit again oskari-spring/webapp-spring/pom.xml file (remove line above):
 ```Bash
 # Remove following line
 <version>1.2.0-SNAPSHOT</version>
