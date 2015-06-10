@@ -91,7 +91,8 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
 						channel.setVersion(layers.getJSONObject(0).getString(DEFAULT_VERSION));
 					}
 					channel.setUrl(layers.getJSONObject(0).getString(PARAM_URL));
-					channel.setRealName(layers.getJSONObject(0).getJSONObject(PARAM_REALNAME));
+					//FIXME Jatkokehitysta varten jos pitaa hakea tason kielistetty nimi
+					//channel.setRealName(layers.getJSONObject(0).getJSONObject(PARAM_REALNAME));
 					channelsParams.add(channel);
 				}
 				
