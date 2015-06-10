@@ -83,12 +83,12 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
 					if(layers.getJSONObject(0).has(PARAM_SRS)){
 						channel.setSrs(layers.getJSONObject(0).getString(PARAM_SRS));
 					} else {
-						channel.setSrs(layers.getJSONObject(0).getString(DEFAULT_SRS));
+						channel.setSrs(DEFAULT_SRS);
 					}
 					if(layers.getJSONObject(0).has(PARAM_VERSION)){
 						channel.setVersion(layers.getJSONObject(0).getString(PARAM_VERSION));
 					} else {
-						channel.setVersion(layers.getJSONObject(0).getString(DEFAULT_VERSION));
+						channel.setVersion(DEFAULT_VERSION);
 					}
 					channel.setUrl(layers.getJSONObject(0).getString(PARAM_URL));
 					//FIXME Jatkokehitysta varten jos pitaa hakea tason kielistetty nimi
