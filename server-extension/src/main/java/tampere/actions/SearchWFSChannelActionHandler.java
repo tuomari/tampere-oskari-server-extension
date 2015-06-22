@@ -29,9 +29,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
      
      @Override
      public void handleGet(ActionParameters params) throws ActionException {
-    	 // Only admin user
-    	 //params.requireAdminUser(); 
-    	 
     	 try {
     		 ResponseHelper.writeResponse(params, SearchWFSChannelHelper.getChannels(params.getUser(), params.getLocale().getLanguage()));
     	 } catch (Exception ex){
