@@ -164,14 +164,14 @@ actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
 
 ## Installation
 
-* Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop_server
+* Clone https://github.com/dimenteq/tampere-oskari-server-extension/tree/develop
 ```Bash
 git clone https://github.com/dimenteq/tampere-oskari-server-extension.git
 ```
-* Change develop_server branch
+* Change develop branch
 ```
 cd tampere-oskari-server-extension
-git checkout develop_server
+git checkout develop
 ```
 * Run mvn clean install in tampere-oskari-server-extension folder
 ```Bash
