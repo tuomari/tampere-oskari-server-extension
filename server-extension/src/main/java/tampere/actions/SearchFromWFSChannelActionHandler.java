@@ -1,18 +1,8 @@
 package tampere.actions;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.search.SearchCriteria;
-import fi.nls.oskari.SearchWorker;
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +10,20 @@ import org.json.JSONObject;
 
 import tampere.domain.WFSSearchChannelsConfiguration;
 import tampere.helpers.SearchWFSChannelHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import fi.mml.portti.service.search.SearchCriteria;
+import fi.nls.oskari.SearchWorker;
+import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWfsSearchResult")
 public class SearchFromWFSChannelActionHandler extends ActionHandler {
@@ -32,15 +32,7 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
     private static final String PARAM_SEARCH_KEY = "searchKey";
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_CHANNELIDS_KEY = "channelIds";
-    private static final String PARAM_LAYERNAME = "layerName";
-    private static final String PARAM_SRS = "srs_name";
-    private static final String PARAM_VERSION = "version";
-    private static final String PARAM_URL = "wmsUrl";
-    private static final String PARAM_REALNAME = "name";
     public static final String PARAM_CHANNELS = "channels";
-    private static final String PARAM_ADMIN = "admin";
-    private static final String PARAM_USERNAME = "username";
-    private static final String PARAM_PASSWORD = "password";
     private static final String DEFAULT_SRS = "EPSG:3067";
     private static final String DEFAULT_VERSION = "1.1.0";
 
@@ -49,7 +41,6 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
     public void init() {
         channels = PropertyUtil.getCommaSeparatedList("actionhandler.GetSearchResult.channels");
     }
-
 
     public void handleAction(final ActionParameters params) throws ActionException {
         final String search = params.getHttpParam(PARAM_SEARCH_KEY);
@@ -70,27 +61,28 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
 				WFSSearchChannelsConfiguration channel = channels.get(i);
 				List<String> layerIds = new ArrayList<String>();
 				layerIds.add(String.valueOf(channel.getWFSLayerId())); 
-				JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage(), false, false);
-				JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
+				
+				OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+				OskariLayer oskariLayer = mapLayerService.find(channel.getWFSLayerId());
 
-				if(layers.length() == 1){
-					if(layers.getJSONObject(0).has(PARAM_ADMIN)){
-						JSONObject adminJSON = layers.getJSONObject(0).getJSONObject(PARAM_ADMIN);
-						channel.setUsername(adminJSON.getString(PARAM_USERNAME));
-						channel.setPassword(adminJSON.getString(PARAM_PASSWORD));
-					}
-					channel.setLayerName(layers.getJSONObject(0).getString(PARAM_LAYERNAME));
-					if(layers.getJSONObject(0).has(PARAM_SRS)){
-						channel.setSrs(layers.getJSONObject(0).getString(PARAM_SRS));
+				if(oskariLayer != null){
+
+					channel.setUsername(oskariLayer.getUsername());
+					channel.setPassword(oskariLayer.getPassword());
+
+					channel.setLayerName(oskariLayer.getName());
+					if(oskariLayer.getSrs_name() != null && !oskariLayer.getSrs_name().isEmpty()){
+						channel.setSrs(oskariLayer.getSrs_name());
 					} else {
 						channel.setSrs(DEFAULT_SRS);
 					}
-					if(layers.getJSONObject(0).has(PARAM_VERSION)){
-						channel.setVersion(layers.getJSONObject(0).getString(PARAM_VERSION));
+					if(oskariLayer.getVersion() != null && !oskariLayer.getVersion().isEmpty()){
+						channel.setVersion(oskariLayer.getVersion());
 					} else {
 						channel.setVersion(DEFAULT_VERSION);
 					}
-					channel.setUrl(layers.getJSONObject(0).getString(PARAM_URL));
+					channel.setUrl(oskariLayer.getUrl());
+					
 					//FIXME Jatkokehitysta varten jos pitaa hakea tason kielistetty nimi
 					//channel.setRealName(layers.getJSONObject(0).getJSONObject(PARAM_REALNAME));
 					channelsParams.add(channel);
