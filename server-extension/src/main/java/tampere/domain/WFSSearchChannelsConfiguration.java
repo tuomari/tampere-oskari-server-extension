@@ -17,6 +17,7 @@ public class WFSSearchChannelsConfiguration {
     protected final static String PARAM_DESC = "desc";
     protected final static String PARAM_PARAMS_FOR_SEARCH = "params_for_search";
     protected final static String PARAM_IS_DEFAULT = "is_default";
+    protected final static String PARAM_IS_ADDRESS = "is_address";
 	
 	
 	private int id = -1;
@@ -25,6 +26,7 @@ public class WFSSearchChannelsConfiguration {
 	private JSONObject desc;
 	private JSONArray paramsForSearch;
 	private Boolean isDefault;
+	private Boolean isAddress;
 	private String layerName;
 	private String url;
 	private String srs;
@@ -42,6 +44,7 @@ public class WFSSearchChannelsConfiguration {
 		JSONHelper.putValue(root, PARAM_DESC, this.getDesc());
 		JSONHelper.putValue(root, PARAM_PARAMS_FOR_SEARCH, this.getParamsForSearch());
 		JSONHelper.putValue(root, PARAM_IS_DEFAULT, this.getIsDefault());
+		JSONHelper.putValue(root, PARAM_IS_ADDRESS, this.getIsAddress());
 		return root;
 	}
 	
@@ -180,6 +183,14 @@ public class WFSSearchChannelsConfiguration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Boolean getIsAddress() {
+		return isAddress;
+	}
+
+	public void setIsAddress(Boolean isAddress) {
+		this.isAddress = isAddress;
 	}
 
 }

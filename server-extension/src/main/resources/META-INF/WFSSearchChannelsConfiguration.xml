@@ -15,6 +15,7 @@
         <result property="desc" column="description" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
         <result property="paramsForSearch" column="params_for_search" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
         <result property="isDefault" column="is_default"/>
+        <result property="isAddress" column="is_address"/>
     </resultMap>
 
     <parameterMap id="ChannelInsertParameter" class="WFSSearchChannelsConfiguration">
@@ -23,6 +24,7 @@
        <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
        <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
        <parameter property="isDefault" />
+       <parameter property="isAddress" />
     </parameterMap>
 
     
@@ -32,6 +34,7 @@
         <parameter property="desc" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
         <parameter property="paramsForSearch" jdbcType="VARCHAR" javaType="org.json.JSONArray"/>
         <parameter property="isDefault" />
+        <parameter property="isAddress" />
         <parameter property="id"/>
     </parameterMap>
 
@@ -68,8 +71,9 @@
         topic,
         description,
         params_for_search,
-        is_default)
-        values (?,?,?,?,?)
+        is_default,
+        is_address)
+        values (?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="ChannelUpdateParameter">
@@ -79,7 +83,8 @@
         topic = ?,
         description = ?,
         params_for_search = ?,
-        is_default = ?
+        is_default = ?,
+        is_address = ?
         WHERE id = ?
     </statement>
 </sqlMap>

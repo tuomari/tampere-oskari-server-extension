@@ -26,6 +26,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 	 private static final String PARAM_DESC = "desc";
 	 private static final String PARAM_PARAMS_FOR_SEARCH= "paramsForSearch";
 	 private static final String PARAM_IS_DEFAULT= "isDefault";
+	 private static final String PARAM_IS_ADDRESS= "isAddress";
      
      @Override
      public void handleGet(ActionParameters params) throws ActionException {
@@ -72,6 +73,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 	   		conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC),"")));   		
 	   		conf.setParamsForSearch(new JSONArray(ConversionHelper.getString(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH),"")));
 	   		conf.setIsDefault(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_DEFAULT), false));
+	   		conf.setIsAddress(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_ADDRESS), false));
 	   		conf.setId(ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1));
 	   		
 	   		ResponseHelper.writeResponse(params, SearchWFSChannelHelper.update(conf));
@@ -93,6 +95,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 	   		conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC),"")));   		
 	   		conf.setParamsForSearch(new JSONArray(ConversionHelper.getString(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH),"")));
 	   		conf.setIsDefault(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_DEFAULT), false));
+	   		conf.setIsAddress(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_ADDRESS), false));
 	   		
 	   		ResponseHelper.writeResponse(params, SearchWFSChannelHelper.insert(conf));
 	   	 } catch (Exception ex){
