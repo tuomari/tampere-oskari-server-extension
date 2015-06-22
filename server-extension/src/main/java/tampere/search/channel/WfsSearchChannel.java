@@ -61,7 +61,7 @@ public class WfsSearchChannel extends SearchChannel {
      * @throws Exception
      */
     private JSONArray getData(SearchCriteria searchCriteria) throws Exception {
-        String searchStr = URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8");
+        String searchStr = searchCriteria.getSearchString();
         log.debug("[WFSSEARCH] Search string: " + searchStr);
         List<WFSSearchChannelsConfiguration> channelsParams = (List<WFSSearchChannelsConfiguration>) searchCriteria.getParam(SearchFromWFSChannelActionHandler.PARAM_CHANNELS);
         JSONArray data = new JSONArray();
@@ -89,22 +89,55 @@ public class WfsSearchChannel extends SearchChannel {
         	StringBuffer filter = new StringBuffer("<Filter>");
         	JSONArray params = channel.getParamsForSearch();
         	
-        	if(params.length()>1){
-        		filter.append("<Or>");
-        	}      	
+        	if(channel.getIsAddress()){
+        		filter.append("<And>");
+        		String streetName = searchStr;
+                String streetNumber = "";
+                // find last word and if it is number then it must be street number?
+                String lastWord = searchStr.substring(searchStr.lastIndexOf(" ") + 1);
+
+                if (isStreetNumber(lastWord)) {
+                    // override streetName without, street number
+                    streetName = searchStr.substring(0, searchStr.lastIndexOf(" "));
+                    log.debug("[tre] found streetnumber " + streetNumber);
+                    streetNumber = lastWord;
+                }
+                
+                filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
+        			"<PropertyName>"+params.getString(0)+"</PropertyName><Literal>"+ streetName +
+        			"*</Literal></PropertyIsLike>"
+        		);
+                
+                filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
+        			"<PropertyName>"+params.getString(1)+"</PropertyName><Literal>"+ streetNumber +
+        			"*</Literal></PropertyIsLike>"
+        		);
+                
+                paramsJSONArray.put(params.getString(0));
+                paramsJSONArray.put(params.getString(1));
+        		
+        		filter.append("</And>");
+        	} else {
+        		
+        		if(params.length()>1){
+	        		filter.append("<Or>");
+	        	}      	
+	        	
+	        	for(int j=0;j<params.length();j++){
+	        		String param = params.getString(j);
+	        		filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
+	        				"<PropertyName>"+param+"</PropertyName><Literal>*"+ searchStr +
+	        				"*</Literal></PropertyIsLike>"
+	        				);
+	        		paramsJSONArray.put(param);
+	        	}
+	        	
+	        	if(params.length()>1){
+	        		filter.append("</Or>");
+	        	}
         	
-        	for(int j=0;j<params.length();j++){
-        		String param = params.getString(j);
-        		filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
-        				"<PropertyName>"+param+"</PropertyName><Literal>*"+ searchStr +
-        				"*</Literal></PropertyIsLike>"
-        				);
-        		paramsJSONArray.put(param);
         	}
         	
-        	if(params.length()>1){
-        		filter.append("</Or>");
-        	} 
         	filter.append("</Filter>");
         	String filterString = filter.toString();
         	filterString = URLEncoder.encode(filterString.trim(), "UTF-8");
@@ -130,6 +163,17 @@ public class WfsSearchChannel extends SearchChannel {
         }
 
         return data;
+    }
+    
+    /**
+     * Returns the true if test contains numbers and/or a/b.
+     *
+     * @param searchCriteria Search criteria.
+     * @return true if string can be set to street number field in wfs query.
+     */
+    private boolean isStreetNumber(String test) {
+        log.debug("[tre] street number candidate: " + test);
+        return test.matches("[0-9-a-b]+");
     }
 
     /**
