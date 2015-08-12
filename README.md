@@ -25,6 +25,7 @@ CREATE TABLE oskari_wfs_search_channels
   description character varying(4000),
   params_for_search character varying(4000) NOT NULL,
   is_default boolean,
+  is_address boolean,
   CONSTRAINT portti_wfs_search_channels_pkey PRIMARY KEY (id)
 )
 WITH (
