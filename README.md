@@ -12,6 +12,8 @@ This extension needs new front-end codes of Oskari (see tampere bundles in https
 
 ### Back-end
 
+These are runned only once in the begin of installation.
+
 #### New table and sequence
 ```PLpgSQL
 CREATE SEQUENCE oskari_wfs_search_channel_seq
@@ -151,6 +153,9 @@ UPDATE portti_view_bundle_seq SET config='
  }'
 WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=1;
 ```
+
+#### hide original "Paikkahaku" tab
+UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
 
 #### oskari-ext.properties file changes
 
