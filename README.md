@@ -158,6 +158,7 @@ WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=
 actionhandler.GetAppSetup.dynamic.bundles = admin-layerselector, admin-layerrights, admin, admin-users, admin-wfs-search-channel
 actionhandler.GetAppSetup.dynamic.bundle.admin.roles = Admin
 actionhandler.GetAppSetup.dynamic.bundle.admin-wfs-search-channel.roles = Admin
+search.channel.WFSSEARCH_CHANNEL.service.url= [URL_FOR_SERVICE]
 search.channel.WFSSEARCH_CHANNEL.maxFeatures = 100
 search.channels.default=WFSSEARCH_CHANNEL
 actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
