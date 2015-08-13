@@ -155,7 +155,9 @@ WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=
 ```
 
 #### hide original "Paikkahaku" tab
+```PLpgSQL
 UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
+```
 
 #### oskari-ext.properties file changes
 
