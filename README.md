@@ -159,8 +159,10 @@ WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=
 UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
 ```
 
-#### use search-from-channes in Publisher plugin search !!! Check that these are valid in your system {"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="} !!!
+#### use search-from-channes in Publisher plugin search
 ```PLpgSQL
+!!! Check that these are valid in your system {"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="} !!!
+
 UPDATE portti_view_bundle_seq SET config='{"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="},
 "tools": [{
             "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
