@@ -159,6 +159,124 @@ WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=
 UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
 ```
 
+#### use search-from-channes in Publisher plugin search !!! Check that these are valid in your system {"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="} !!!
+```PLpgSQL
+UPDATE portti_view_bundle_seq SET config='{"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="},
+"tools": [{
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
+            "selected": false,
+            "lefthanded": "bottom left",
+            "righthanded": "bottom right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "bottom left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.IndexMapPlugin",
+            "selected": false,
+            "lefthanded": "bottom right",
+            "righthanded": "bottom left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "bottom right"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
+            "selected": false,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+            "selected": true,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin",
+            "selected": false,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin",
+            "selected": false,
+            "lefthanded": "top right",
+            "righthanded": "top left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top right"
+                },
+					"url":  "/action?action_route=GetWfsSearchResult"
+            }
+        }, {
+            "id": "Oskari.mapframework.mapmodule.ControlsPlugin",
+            "selected": true
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin",
+            "selected": false,
+            "lefthanded": "top right",
+            "righthanded": "top left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top right"
+                },
+                "toolbarId": "PublisherToolbar"
+            }
+        }, {
+            "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+            "selected": true,
+            "config": {
+                "ignoredLayerTypes": ["WFS"],
+                "infoBox": false
+            }
+        }] 
+		}'
+WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='publisher') AND view_id=1;
+```
+
 #### oskari-ext.properties file changes
 
 ```Shell
