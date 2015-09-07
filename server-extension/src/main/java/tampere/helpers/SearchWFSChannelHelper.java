@@ -50,6 +50,24 @@ public class SearchWFSChannelHelper {
 	}
 	
 	/**
+	 * Get WFS channels id's
+	 * @return JSONArray
+	 */
+	public static JSONArray getDefaultChannelsIds() throws JSONException{
+		JSONArray job = new JSONArray();
+		List<WFSSearchChannelsConfiguration> channels = channelService.findChannels();
+		
+		for(int i=0;i<channels.size();i++){
+			WFSSearchChannelsConfiguration channel = channels.get(i);
+			if(channel.getIsDefault()){
+				job.put(channel.getId());
+			}
+		}
+	   	 
+	   	return job;
+	}
+	
+	/**
 	 * Get channel by id
 	 * @param channelIds
 	 * @return

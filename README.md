@@ -12,6 +12,8 @@ This extension needs new front-end codes of Oskari (see tampere bundles in https
 
 ### Back-end
 
+These are runned only once in the begin of installation.
+
 #### New table and sequence
 ```PLpgSQL
 CREATE SEQUENCE oskari_wfs_search_channel_seq
@@ -25,6 +27,7 @@ CREATE TABLE oskari_wfs_search_channels
   description character varying(4000),
   params_for_search character varying(4000) NOT NULL,
   is_default boolean,
+  is_address boolean,
   CONSTRAINT portti_wfs_search_channels_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -151,12 +154,138 @@ UPDATE portti_view_bundle_seq SET config='
 WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=1;
 ```
 
+#### hide original "Paikkahaku" tab
+```PLpgSQL
+UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
+```
+
+#### use search-from-channes in Publisher plugin search
+```PLpgSQL
+!!! Check that these are valid in your system {"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="} !!!
+
+UPDATE portti_view_bundle_seq SET config='{"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="},
+"tools": [{
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
+            "selected": false,
+            "lefthanded": "bottom left",
+            "righthanded": "bottom right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "bottom left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.IndexMapPlugin",
+            "selected": false,
+            "lefthanded": "bottom right",
+            "righthanded": "bottom left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "bottom right"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
+            "selected": false,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+            "selected": true,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin",
+            "selected": false,
+            "lefthanded": "top left",
+            "righthanded": "top right",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top left"
+                }
+            }
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin",
+            "selected": false,
+            "lefthanded": "top right",
+            "righthanded": "top left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top right"
+                },
+					"url":  "/action?action_route=GetWfsSearchResult"
+            }
+        }, {
+            "id": "Oskari.mapframework.mapmodule.ControlsPlugin",
+            "selected": true
+        }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin",
+            "selected": false,
+            "lefthanded": "top right",
+            "righthanded": "top left",
+            "config": {
+                "location": {
+                    "top": "",
+                    "right": "",
+                    "bottom": "",
+                    "left": "",
+                    "classes": "top right"
+                },
+                "toolbarId": "PublisherToolbar"
+            }
+        }, {
+            "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+            "selected": true,
+            "config": {
+                "ignoredLayerTypes": ["WFS"],
+                "infoBox": false
+            }
+        }] 
+		}'
+WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='publisher') AND view_id=1;
+```
+
 #### oskari-ext.properties file changes
 
 ```Shell
 actionhandler.GetAppSetup.dynamic.bundles = admin-layerselector, admin-layerrights, admin, admin-users, admin-wfs-search-channel
 actionhandler.GetAppSetup.dynamic.bundle.admin.roles = Admin
 actionhandler.GetAppSetup.dynamic.bundle.admin-wfs-search-channel.roles = Admin
+search.channel.WFSSEARCH_CHANNEL.service.url= [URL_FOR_SERVICE]
 search.channel.WFSSEARCH_CHANNEL.maxFeatures = 100
 search.channels.default=WFSSEARCH_CHANNEL
 actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL

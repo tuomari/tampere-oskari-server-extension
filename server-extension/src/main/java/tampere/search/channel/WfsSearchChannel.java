@@ -88,8 +88,9 @@ public class WfsSearchChannel extends SearchChannel {
         	buf.append("&Filter=");
         	StringBuffer filter = new StringBuffer("<Filter>");
         	JSONArray params = channel.getParamsForSearch();
+        	String isKiinteitoTunnus = searchStr.replace("-","");
         	
-        	if(channel.getIsAddress()){
+        	if(channel.getIsAddress() && !isKiinteitoTunnus.matches("[0-9]+")){
         		filter.append("<And>");
         		String streetName = searchStr;
                 String streetNumber = "";

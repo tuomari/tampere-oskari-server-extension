@@ -54,7 +54,12 @@ public class SearchFromWFSChannelActionHandler extends ActionHandler {
         
 		try {
 			
-			channelIds = new JSONArray(params.getHttpParam(PARAM_CHANNELIDS_KEY));
+			if(params.getHttpParam(PARAM_CHANNELIDS_KEY) != null){
+				channelIds = new JSONArray(params.getHttpParam(PARAM_CHANNELIDS_KEY));
+			}else{
+				channelIds = SearchWFSChannelHelper.getDefaultChannelsIds();
+			}
+			
 			List<WFSSearchChannelsConfiguration> channels = SearchWFSChannelHelper.getChannelById(channelIds);
 			
 			for (int i = 0; i < channels.size(); i++) {
