@@ -11,7 +11,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <oskari.version>1.29.0</oskari.version>
+    <oskari.version>1.31.0</oskari.version>
     <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
     <postgresql.version>9.3-1102-jdbc41</postgresql.version>
     <java.version>1.7</java.version>
@@ -43,17 +43,22 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
     <modules>
         <!-- Disabled since no-one is using it for now -->
         <!-- <module>elf-resources</module> -->
-        <!-- <module>service-wpos</module> -->
-        <!-- module>runnable-jar</module -->
-        <!--  <module>server-extension</module> -->
         <!-- <module>webapp-map</module> -->
-        <!-- <module>webapp-transport</module> -->
         <module>server-extension</module>
+        <module>tampere-resources</module>
+        <module>webapp-map</module>
     </modules>
 </project>
