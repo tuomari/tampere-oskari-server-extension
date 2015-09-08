@@ -12,9 +12,12 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <typeHandler javaType="org.json.JSONArray" jdbcType="VARCHAR" callback="tampere.domain.utils.JSONArrayTypeHandler"/>
   <typeHandler javaType="java.lang.String" jdbcType="OTHER" callback="fi.nls.oskari.domain.utils.UuIdTypeHandler"/>
 
+
   <transactionManager type="JDBC" commitRequired="true">
-      <dataSource type="fi.nls.oskari.db.IbatisDataSourceFactory" />
-  </transactionManager>
+     <dataSource type="JNDI">
+       <property name="DataSource" value="java:/comp/env/jdbc/OskariPool" />
+     </dataSource>
+   </transactionManager>
   
   <sqlMap resource="META-INF/WFSSearchChannelsConfiguration.xml" />
 </sqlMapConfig>
