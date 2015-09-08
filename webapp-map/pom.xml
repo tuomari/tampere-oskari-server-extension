@@ -28,6 +28,7 @@
             <artifactId>server-extension</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <!-- Replace icu4j version included by axiom-api with newer version
         which does not brake .jar investigation performed by jetty-maven plugin  -->
         <dependency>
@@ -54,6 +55,13 @@
             <artifactId>service-logging</artifactId>
             <version>${oskari.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>servlet-saml-config</artifactId>
+            <version>${oskari.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

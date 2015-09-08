@@ -54,9 +54,6 @@
     </build>
     
     <modules>
-        <!-- Disabled since no-one is using it for now -->
-        <!-- <module>elf-resources</module> -->
-        <!-- <module>webapp-map</module> -->
         <module>server-extension</module>
         <module>tampere-resources</module>
         <module>webapp-map</module>
