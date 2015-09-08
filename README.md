@@ -6,280 +6,21 @@ Extends Oskari server functionality to serve WFS search.
 
 ## Prerequisites
 
+These uses Oskari 1.31.1 version.
+
 ### Front-end
 
 This extension needs new front-end codes of Oskari (see tampere bundles in https://github.com/dimenteq/tampere-oskari).
 
 ### Back-end
 
-These are runned only once in the begin of installation.
+This version upgrade drops all ready defined search channels (database upgrades has moved to Flyway).
 
-#### New table and sequence
-```PLpgSQL
-CREATE SEQUENCE oskari_wfs_search_channel_seq
-  INCREMENT 1;
-  
-CREATE TABLE oskari_wfs_search_channels
-(
-  id integer NOT NULL DEFAULT nextval('oskari_wfs_search_channel_seq'::regclass),
-  wfs_layer_id integer NOT NULL,
-  topic character varying(4000) NOT NULL,
-  description character varying(4000),
-  params_for_search character varying(4000) NOT NULL,
-  is_default boolean,
-  is_address boolean,
-  CONSTRAINT portti_wfs_search_channels_pkey PRIMARY KEY (id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE oskari_wfs_search_channels
-  OWNER TO postgres;
-```
+##### Database
 
-#### Add new bundles
-```PLpgSQL
-INSERT INTO portti_bundle values((select max(id)+1 from portti_bundle),'admin-wfs-search-channel','{}','{}',' {
-	"instanceProps": {
-		
-	},
-	"title": "AdminWfsSearchChannel",
-	"bundleinstancename": "admin-wfs-search-channel",
-	"fi": "admin-wfs-search-channel",
-	"sv": "admin-wfs-search-channel",
-	"en": "admin-wfs-search-channel",
-	"bundlename": "admin-wfs-search-channel",
-	"metadata": {
-		"Import-Bundle": {
-			"admin-wfs-search-channel": {
-				"bundlePath": "/Oskari/packages/tampere/bundle/"
-			}
-		},
-		"Require-Bundle-Instance": []
-	}
-}');
+Nothing need to be done. This application upgrades it's database automatically.
 
-INSERT INTO portti_bundle values((select max(id)+1 from portti_bundle),'search-from-channels','{}','{}',' {
-	"instanceProps": {
-		
-	},
-	"title": "SearchFromChannelsBundle",
-	"bundleinstancename": "search-from-channels",
-	"fi": "search-from-channels",
-	"sv": "search-from-channels",
-	"en": "search-from-channels",
-	"bundlename": "search-from-channels",
-	"metadata": {
-		"Import-Bundle": {
-			"search-from-channels": {
-				"bundlePath": "/Oskari/packages/tampere/bundle/"
-			}
-		},
-		"Require-Bundle-Instance": []
-	}
-}');
-```
-
-### Add bundle to view (check view)
-
-```PLpgSQL
-INSERT 
-INTO portti_view_bundle_seq
-(
-	view_id,
-	bundle_id,
-	seqno,
-	config,
-	state,
-	startup,
-	bundleinstance
-)
-VALUES (
-	1,
-	(SELECT id FROM portti_bundle WHERE name='search-from-channels'),
-	(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=1),
-	(SELECT config FROM portti_bundle WHERE name='search-from-channels'),
-	(SELECT state FROM portti_bundle WHERE name='search-from-channels'),
-	(SELECT startup FROM portti_bundle WHERE name='search-from-channels'),
-	'search-from-channels'
-);
-```
-
-### Add VectorLayer plugin to mapfull bundle (check SQL to respond you database defination)
-```PLpgSQL
-UPDATE portti_view_bundle_seq SET config='
-{ 
-     "globalMapAjaxUrl": "[REPLACED BY HANDLER]", 
-     "imageLocation": "/Oskari/resources", 
-     "mapOptions" : {"srsName":"EPSG:3067","maxExtent":{"bottom":6291456,"left":-548576,"right":1548576,"top":8388608},"resolutions":[2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625]}, 
-     "plugins" : [ 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" }, 
-        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" }, 
-        { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" }, 
-        { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" }, 
-        { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin", 
-          "config" : {  
-             "ignoredLayerTypes" : ["WFS","MYPLACES", "USERLAYER"], 
-             "infoBox": false  
-          } 
-        }, 
-        { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",  
-         "config" : {
-		"contextPath" : "/transport",
-		"hostname" : "localhost",
-		"port" : "9901"
-         } 
-        }, 
-        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } , 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" }, 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" }, 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" }, 
-        { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" }, 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" }, 
-        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }, 
-        { 
-             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin", 
-             "config" : { 
-                 "showAsDropdown" : false, 
-                 "baseLayers" : ["4", "5", "6", "18", "153", "154", "156"] 
-             } 
-        }, 
-        {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }, 
-        { "id" : "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin" },
-				{ "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" }
-       ], 
-       "layers": [ 
-       ] 
- }'
-WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='mapfull') AND view_id=1;
-```
-
-#### hide original "Paikkahaku" tab
-```PLpgSQL
-UPDATE portti_view_bundle_seq SET config='{"disableDefault": true}'  WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='search') AND view_id = 1;
-```
-
-#### use search-from-channes in Publisher plugin search
-```PLpgSQL
-!!! Check that these are valid in your system {"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="} !!!
-
-UPDATE portti_view_bundle_seq SET config='{"publishedMapUrl":{"fi":"localhost:2373/?viewId=","sv":"localhost:2373/?viewId=","en":"localhost:2373/?viewId="},
-"tools": [{
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
-            "selected": false,
-            "lefthanded": "bottom left",
-            "righthanded": "bottom right",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "bottom left"
-                }
-            }
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.IndexMapPlugin",
-            "selected": false,
-            "lefthanded": "bottom right",
-            "righthanded": "bottom left",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "bottom right"
-                }
-            }
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
-            "selected": false,
-            "lefthanded": "top left",
-            "righthanded": "top right",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "top left"
-                }
-            }
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
-            "selected": true,
-            "lefthanded": "top left",
-            "righthanded": "top right",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "top left"
-                }
-            }
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin",
-            "selected": false,
-            "lefthanded": "top left",
-            "righthanded": "top right",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "top left"
-                }
-            }
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin",
-            "selected": false,
-            "lefthanded": "top right",
-            "righthanded": "top left",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "top right"
-                },
-					"url":  "/action?action_route=GetWfsSearchResult"
-            }
-        }, {
-            "id": "Oskari.mapframework.mapmodule.ControlsPlugin",
-            "selected": true
-        }, {
-            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin",
-            "selected": false,
-            "lefthanded": "top right",
-            "righthanded": "top left",
-            "config": {
-                "location": {
-                    "top": "",
-                    "right": "",
-                    "bottom": "",
-                    "left": "",
-                    "classes": "top right"
-                },
-                "toolbarId": "PublisherToolbar"
-            }
-        }, {
-            "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
-            "selected": true,
-            "config": {
-                "ignoredLayerTypes": ["WFS"],
-                "infoBox": false
-            }
-        }] 
-		}'
-WHERE bundle_id=(SELECT id FROM portti_bundle WHERE name='publisher') AND view_id=1;
-```
-
-#### oskari-ext.properties file changes
+##### oskari-ext.properties file changes
 
 ```Shell
 actionhandler.GetAppSetup.dynamic.bundles = admin-layerselector, admin-layerrights, admin, admin-users, admin-wfs-search-channel
@@ -289,6 +30,7 @@ search.channel.WFSSEARCH_CHANNEL.service.url= [URL_FOR_SERVICE]
 search.channel.WFSSEARCH_CHANNEL.maxFeatures = 100
 search.channels.default=WFSSEARCH_CHANNEL
 actionhandler.GetSearchResult.channels=WFSSEARCH_CHANNEL
+db.additional.modules=tampere
 ```
 
 ## Installation
@@ -306,28 +48,7 @@ git checkout develop
 ```Bash
 mvn clean install
 ```
-* Clone https://github.com/nls-oskari/oskari-spring
-```Bash
-cd ..
-git clone https://github.com/nls-oskari/oskari-spring.git
-```
-* Change master branch
-```Bash
-cd oskari-spring
-git checkout master
-```
-* Add tampere-oskari-server-extension dependency to oskari-spring/webapp-spring/pom.xml (edit file): 
-```Xml
-<dependency>
-    <groupId>fi.tampere.oskari</groupId>
-    <artifactId>server-extension</artifactId>
-    <version>1.0-SNAPSHOT</version>
-</dependency>
-```
-* Run mvn clean install in oskari-spring folder
-```Bash
-mvn clean install
-```
+
 * If you see following error "Could not resolve dependencies for project fi.nls.oskari.spring:webapp.map:w
 ar:1.2.0-SNAPSHOT: Could not find artifact", fix this to edit again oskari-spring/webapp-spring/pom.xml file (remove line above):
 ```Bash
@@ -335,5 +56,11 @@ ar:1.2.0-SNAPSHOT: Could not find artifact", fix this to edit again oskari-sprin
 <version>1.2.0-SNAPSHOT</version>
 ```
 * Stop Jetty
-* Copy oskari-spring/webapp-spring/target/spring-map.war to your Jetty installation webapps folder (and rename war file if you want)
+* Remove Oskari spring-map folder if exists (github clone)
+* Remove <JETTY>/webapps/spring-map.war
+* Remove <JETTY>/webapp/transport.war
+* Rename from <JETTY>/contexts/spring-map.xml to <JETTY>/contexts/oskari-map.xml
+* Edit <JETTY>/contexts/oskari-map.xml -file and change /webapps/spring-map.war to /webapps/oskari-map.war
+* Copy oskari-server-extension/webapp-map/target/oskari-map.war to <JETTY>/webapps/oskari-map.war
+* Copy oskari-server-extension/webapp-transport/target/transport.war to <JETTY>/webapps/transport.war
 * Start Jetty

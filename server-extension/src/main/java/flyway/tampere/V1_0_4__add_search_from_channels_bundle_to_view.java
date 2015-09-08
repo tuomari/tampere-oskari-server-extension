@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 /**
  * Created by markokuo on 7.9.2015.
  */
-public class V1_0_3__add_search_from_channels_bundle_to_view  implements JdbcMigration {
+public class V1_0_4__add_search_from_channels_bundle_to_view implements JdbcMigration {
     private ViewService service = new ViewServiceIbatisImpl();
 
     public void migrate(Connection connection)

@@ -15,13 +15,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
-import java.util.List;
 
 /**
  * Created by markokuo on 7.9.2015.
  */
-public class V1_0_4__add_vectorlayer_plugin_to_mapfull_bundle_config  implements JdbcMigration {
-    private static final Logger LOG = LogFactory.getLogger(V1_0_4__add_vectorlayer_plugin_to_mapfull_bundle_config.class);
+public class V1_0_5__add_vectorlayer_plugin_to_mapfull_bundle_config implements JdbcMigration {
+    private static final Logger LOG = LogFactory.getLogger(V1_0_5__add_vectorlayer_plugin_to_mapfull_bundle_config.class);
     private ViewService service = new ViewServiceIbatisImpl();
     private static final String PLUGIN_NAME = "Oskari.mapframework.mapmodule.VectorLayerPlugin";
 

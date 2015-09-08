@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 /**
  * Created by markokuo on 7.9.2015.
  */
-public class V1_0_1__add_admin_wfs_search_channel_bundle_config implements JdbcMigration {
-    private static final String BUNDLE_NAME = "admin-wfs-search-channel";
+public class V1_0_3__add_search_for_channels_bundle_config implements JdbcMigration {
+    private static final String BUNDLE_NAME = "search-from-channels";
 
     public void migrate(Connection connection)
             throws Exception {
@@ -35,18 +35,18 @@ public class V1_0_1__add_admin_wfs_search_channel_bundle_config implements JdbcM
     private void addBundle(Connection connection)
             throws Exception {
         final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO portti_bundle (name, config, state, startup) values('"+BUNDLE_NAME+ "','{}','{}',' {" +
-                        "    \"instanceProps\": { " +
+                connection.prepareStatement("INSERT INTO portti_bundle (name, config, state, startup) values ('"+BUNDLE_NAME+"','{}','{}',' { " +
+                        "\"instanceProps\": {" +
                         "    }, " +
-                        "    \"title\": \"AdminWfsSearchChannel\", " +
-                        "    \"bundleinstancename\": \"admin-wfs-search-channel\", " +
-                        "    \"fi\": \"admin-wfs-search-channel\", " +
-                        "    \"sv\": \"admin-wfs-search-channel\", " +
-                        "    \"en\": \"admin-wfs-search-channel\", " +
-                        "    \"bundlename\": \"admin-wfs-search-channel\", " +
+                        "    \"title\": \"SearchFromChannelsBundle\", " +
+                        "    \"bundleinstancename\": \"search-from-channels\", " +
+                        "    \"fi\": \"search-from-channels\", " +
+                        "    \"sv\": \"search-from-channels\", " +
+                        "    \"en\": \"search-from-channels\", " +
+                        "    \"bundlename\": \"search-from-channels\", " +
                         "    \"metadata\": { " +
                         "        \"Import-Bundle\": { " +
-                        "            \"admin-wfs-search-channel\": { " +
+                        "            \"search-from-channels\": { " +
                         "                \"bundlePath\": \"/Oskari/packages/tampere/bundle/\" " +
                         "            } " +
                         "        }, " +

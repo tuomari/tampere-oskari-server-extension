@@ -6,22 +6,18 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.view.modifier.ViewModifier;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
  * Created by markokuo on 7.9.2015.
  */
-public class V1_0_6__change_publisher_search_action_url  implements JdbcMigration {
-    private static final Logger LOG = LogFactory.getLogger(V1_0_6__change_publisher_search_action_url.class);
+public class V1_0_7__change_publisher_search_action_url implements JdbcMigration {
+    private static final Logger LOG = LogFactory.getLogger(V1_0_7__change_publisher_search_action_url.class);
     private ViewService service = new ViewServiceIbatisImpl();
     private static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
 
