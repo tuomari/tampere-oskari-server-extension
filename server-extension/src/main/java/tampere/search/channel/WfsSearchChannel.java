@@ -41,6 +41,7 @@ public class WfsSearchChannel extends SearchChannel {
     public static final String PARAM_GEOMETRY = "GEOMETRY";
     public static final String PARAM_WFS_SEARCH_CHANNEL_TYPE = "WFS_SEARCH_CHANNEL_TYPE";
     public static final String PARAM_WFS_SEARCH_CHANNEL_TITLE = "WFS_SEARCH_CHANNEL_TITLE";
+    public static final String PARAM_WFS_SEARCH_CHANNEL_ISADDRESS = "WFS_SEARCH_CHANNEL_ISADDRESS";
     public static final String GT_GEOM_POINT = "POINT";
     public static final String GT_GEOM_LINESTRING = "LINESTRING";
     public static final String GT_GEOM_POLYGON = "POLYGON";
@@ -104,12 +105,12 @@ public class WfsSearchChannel extends SearchChannel {
                     streetNumber = lastWord;
                 }
                 
-                filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
+                filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
         			"<PropertyName>"+params.getString(0)+"</PropertyName><Literal>"+ streetName +
         			"*</Literal></PropertyIsLike>"
         		);
                 
-                filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
+                filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
         			"<PropertyName>"+params.getString(1)+"</PropertyName><Literal>"+ streetNumber +
         			"*</Literal></PropertyIsLike>"
         		);
@@ -158,6 +159,7 @@ public class WfsSearchChannel extends SearchChannel {
                 JSONObject wfsJSON = new JSONObject(WFSData);
                 wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE,channel.getTopic().getString(searchCriteria.getLocale()));
                 wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE,paramsJSONArray);
+                wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS,channel.getIsAddress());
                 data.put(wfsJSON); 
         	}
 
@@ -200,9 +202,9 @@ public class WfsSearchChannel extends SearchChannel {
                 for (int i = 0; i < featuresArr.length(); i++) {
                     SearchResultItem item = new SearchResultItem();
                     JSONObject loopJSONObject = featuresArr.getJSONObject(i);
-                    
+
                     item.setType(resp.getString(PARAM_WFS_SEARCH_CHANNEL_TYPE));
-                    item.setTitle(getTitle(resp, loopJSONObject));
+                    item.setTitle(getTitle(resp, loopJSONObject, resp.getBoolean(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS)));
 
                     if(loopJSONObject.has("geometry")) {
 	                    JSONObject featuresObj_geometry = loopJSONObject.getJSONObject("geometry");
@@ -262,7 +264,7 @@ public class WfsSearchChannel extends SearchChannel {
      * @param loopJSONObject
      * @return title
      */
-    private String getTitle(JSONObject resp, JSONObject loopJSONObject){
+    private String getTitle(JSONObject resp, JSONObject loopJSONObject, Boolean isAddress){
     	StringBuffer buf = new StringBuffer();
     	JSONArray params;
 		try {
@@ -272,8 +274,10 @@ public class WfsSearchChannel extends SearchChannel {
 			for(int i=0;i<params.length();i++) {
 	    		String param = params.getString(i);
 	    		buf.append(properties.getString(param));
-	    		if(i<params.length()-1) {
+	    		if(i<params.length()-1 && !isAddress) {
 	    			buf.append(", ");
+	    		}else{
+	    			buf.append(" ");
 	    		}
 	    	}
 		} catch (JSONException e) {

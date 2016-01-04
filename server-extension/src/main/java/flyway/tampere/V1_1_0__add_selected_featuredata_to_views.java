@@ -11,7 +11,7 @@ import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 public class V1_1_0__add_selected_featuredata_to_views  implements JdbcMigration {
 	
 	private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
-	private static final  String SELECTED_FEATUREDATA = "selected_featuredata";
+	private static final  String SELECTED_FEATUREDATA = "selected-featuredata";
 	
 	public void migrate(Connection connection) throws Exception {
 		long viewId = VIEW_SERVICE.getDefaultViewId();

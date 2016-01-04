@@ -10,7 +10,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 public class V1_0_9__register_selected_featuredata_bundle implements JdbcMigration{
 
 	private static final String NAMESPACE = "framework";
-	private static final String SELECTED_FEATUREDATA = "selected_featuredata";
+	private static final String SELECTED_FEATUREDATA = "selected-featuredata";
 
 	public void migrate(Connection connection) {
 	// BundleHelper checks if these bundles are already registered
