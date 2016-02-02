@@ -84,6 +84,13 @@
             <artifactId>oskari-search-nls</artifactId>
             <version>${oskari.version}</version>
         </dependency>
+        
+        <dependency>
+          	<groupId>fi.nls.oskari.service</groupId>
+          	<artifactId>oskari-control-myplaces</artifactId>
+         	<version>${oskari.version}</version>
+      	</dependency>
+        
         <!-- /oskari -->
 
         <dependency>
