@@ -6,7 +6,7 @@ Extends Oskari server functionality to serve WFS search.
 
 ## Prerequisites
 
-These uses Oskari 1.34.0 version.
+These uses Oskari 1.40.0 version.
 
 ### Front-end
 
