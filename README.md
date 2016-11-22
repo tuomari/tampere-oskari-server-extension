@@ -4,6 +4,18 @@ Tampere Oskari server extension
 
 Extends Oskari server functionality to serve WFS search.
 
+## Releases
+
+### 1.1
+
+Upgraded Oskari to 1.40.0. 
+
+Drop oskari_status_tampere table from the database to reinit the module. Code from 1.0 has been moved to oskari-server.
+
+### 1.0
+
+Initial release with Oskari 1.34.0
+
 ## Prerequisites
 
 These uses Oskari 1.40.0 version.
