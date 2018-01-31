@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Oskari - ${viewName}</title>
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.js">
     </script>
