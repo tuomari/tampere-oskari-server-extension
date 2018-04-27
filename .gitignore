@@ -10,3 +10,4 @@ target/
 .project
 *pom.xml.versionsBackup
 runnable-jar/dist/
+*/.sts4-cache
