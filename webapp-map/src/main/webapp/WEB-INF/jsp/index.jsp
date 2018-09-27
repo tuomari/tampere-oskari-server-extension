@@ -121,7 +121,10 @@
         <c:choose>
             <%-- If logout url is present - so logout link --%>
             <c:when test="${!empty _logout_uri}">
-                <a href="${pageContext.request.contextPath}${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+                <form action="${pageContext.request.contextPath}${_logout_uri}" method="POST" id="logoutform">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <a href="${pageContext.request.contextPath}${_logout_uri}" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
+                </form>
                 <%-- oskari-profile-link id is used by the personaldata bundle - do not modify --%>
                 <a href="${pageContext.request.contextPath}${_registration_uri}" id="oskari-profile-link"><spring:message code="account" text="Account" /></a>
             </c:when>
@@ -133,9 +136,11 @@
                 <c:if test="${!empty _login_uri && !empty _login_field_user}">
                     <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
                         <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
-                               required>
-                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="<spring:message code="password" text="Password" />" required>
-                        <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
+                               required />
+                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="<spring:message code="password" text="Password" />" required />
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />" />
                     </form>
                 </c:if>
                 <c:if test="${!empty _registration_uri}">
