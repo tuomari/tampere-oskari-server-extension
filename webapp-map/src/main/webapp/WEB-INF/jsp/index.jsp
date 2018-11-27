@@ -6,10 +6,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Oskari - ${viewName}</title>
-
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.7.2.min.js">
-    </script>
+    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
+	</script>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -19,8 +19,9 @@
   ga('create', 'UA-51232341-2', 'auto');
   ga('send', 'pageview');
 
-	</script>
 		
+    </script>
+
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"
@@ -38,7 +39,6 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
-    
     <style type="text/css">
         @media screen {
             body {
@@ -114,8 +114,9 @@
             }
         }
 		@media screen and (max-width: 1400px) {
-			#tampere_vaakuna{
+			#tampere_vaakuna {
 				display:none;
+            }
 		}
     </style>
     <!-- ############# /css ################# -->
@@ -141,29 +142,31 @@
          <c:choose>            
             <%-- If logout url is present - so logout link --%>
             <c:when test="${!empty _logout_uri}">
-                <a href="${pageContext.request.contextPath}${_logout_uri}">Logout</a>
+                <form action="${pageContext.request.contextPath}${_logout_uri}" method="POST" id="logoutform">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <a href="${pageContext.request.contextPath}${_logout_uri}" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
+                </form>
             </c:when>
             <%-- Otherwise show appropriate logins --%>
             <c:otherwise>
                 <c:set var="userIp" value="${header['X-FORWARDED-FOR']}" />           
                 <%-- test start --%>
-                <%--<c:out value="jorma2"/>--%>
                 <c:choose>
                     <c:when test="${fn:startsWith(userIp,'10.')}">
                             <c:if test="${!empty _login_uri_saml}">
                                 <a href="${pageContext.request.contextPath}${_login_uri_saml}">Kirjaudu SAMLilla</a><hr />
                             </c:if>
                     </c:when>
-                    <c:otherwise></c:otherwise>              
                 </c:choose>
                 <c:if test="${!empty param.login && !empty _login_uri && !empty _login_field_user}">
-                                <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
-                                    <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="Username" autofocus
-                                           required>
-                                    <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="Password" required>
-                                    <input type="submit" id="submit" value="Log in">
-                                </form>
-                            </c:if>
+                    <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
+                        <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="Username" autofocus
+                                required>
+                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="Password" required>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <input type="submit" id="submit" value="Log in">
+                    </form>
+                </c:if>
                 <%-- test end --%>                
             </c:otherwise>
         </c:choose>
@@ -190,37 +193,16 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var viewId = '${viewId}';
-    var language = '${language}';
-    var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
-
+<%-- Pre-compiled application JS, empty unless created by build job --%>
 <script type="text/javascript"
-        src="/Oskari/bundles/bundle.js">
+        src="/Oskari${path}/oskari.min.js">
 </script>
-
-<!--  OPENLAYERS -->
+<%--language files --%>
 <script type="text/javascript"
-        src="/Oskari/packages/openlayers/startup.js">
+        src="/Oskari${path}/oskari_lang_${language}.js">
 </script>
-
-<c:if test="${preloaded}">
-    <!-- Pre-compiled application JS, empty unless created by build job -->
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari.min.js">
-    </script>
-    <!-- Minified CSS for preload -->
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="/Oskari${path}/oskari.min.css"
-            />
-    <%--language files --%>
-   <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_${language}.js">
-    </script>
-</c:if>
 
 <script type="text/javascript"
         src="/Oskari${path}/index.js">
