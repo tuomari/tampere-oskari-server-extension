@@ -8,8 +8,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Oskari - ${viewName}</title>
-    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
-	</script>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -26,19 +24,8 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari/resources/css/forms.css"/>
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="/Oskari/resources/css/portal.css"/>
-    <link
-            rel="stylesheet"
-            type="text/css"
             href="/Oskari${path}/icons.css"/>
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="/Oskari${path}/css/overwritten.css"/>
+
     <style type="text/css">
         @media screen {
             body {
@@ -71,7 +58,7 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
+                background-image: url("/Oskari/${version}/resources/images/forms/input_shadow.png");
                 background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;
