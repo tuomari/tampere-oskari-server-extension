@@ -1,25 +1,25 @@
 <project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fi.tampere.oskari</groupId>
-  <artifactId>tampere-parent</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Tampere applications</name>
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fi.tampere.oskari</groupId>
+    <artifactId>tampere-parent</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Tampere applications</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <oskari.version>1.49.0-SNAPSHOT</oskari.version>
-    <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
-    <postgresql.version>9.3-1102-jdbc41</postgresql.version>
-    <java.version>1.7</java.version>
-    <junit.version>4.11</junit.version>
-    <slf4j.version>1.7.12</slf4j.version>
-   </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <oskari.version>1.49.0</oskari.version>
+        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
+        <postgresql.version>42.2.5</postgresql.version>
+        <java.version>1.7</java.version>
+        <junit.version>4.11</junit.version>
+        <slf4j.version>1.7.12</slf4j.version>
+    </properties>
 
-   <repositories>
+    <repositories>
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org release repository</name>

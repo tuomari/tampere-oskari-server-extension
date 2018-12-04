@@ -79,12 +79,14 @@
             </exclusions>
         </dependency>
 
+        <!-- ##### oskari-search-nls needs another release that uses 19.2 geotools ###### -->
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
+            <groupId>fi.nls.oskari.extras</groupId>
             <artifactId>oskari-search-nls</artifactId>
-            <version>${oskari.version}</version>
+            <version>2.1</version>
         </dependency>
-        
+        <!-- ##### Otherwise things break when using newer GeoTools on Oskari 1.50.0 ###### -->
+
         <dependency>
           	<groupId>fi.nls.oskari.service</groupId>
           	<artifactId>oskari-control-myplaces</artifactId>
