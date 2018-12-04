@@ -26,6 +26,10 @@
             type="text/css"
             href="/Oskari${path}/icons.css"/>
 
+            <link
+            rel="stylesheet"
+            type="text/css"
+            src="/Oskari${path}/oskari.min.css" />
     <style type="text/css">
         @media screen {
             body {
