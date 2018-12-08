@@ -45,7 +45,6 @@ public class V1_0_4__add_search_from_channels_bundle_to_view implements JdbcMigr
                         "    seqno, " +
                         "    config, " +
                         "    state, " +
-                        "    startup, " +
                         "    bundleinstance " +
                         ") " +
                         "VALUES ( " +
@@ -54,7 +53,6 @@ public class V1_0_4__add_search_from_channels_bundle_to_view implements JdbcMigr
                         "    (SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=1), " +
                         "    (SELECT config FROM portti_bundle WHERE name='search-from-channels'), " +
                         "    (SELECT state FROM portti_bundle WHERE name='search-from-channels'), " +
-                        "    (SELECT startup FROM portti_bundle WHERE name='search-from-channels'), " +
                         "    'search-from-channels' " +
                         ")");
         try {

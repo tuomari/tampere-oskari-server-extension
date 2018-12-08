@@ -23,13 +23,12 @@ public class V1_1_0__add_selected_featuredata_to_views  implements JdbcMigration
 
         final PreparedStatement statement =
                 connection.prepareStatement("INSERT INTO portti_view_bundle_seq" +
-                        "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
+                        "(view_id, bundle_id, seqno, config, state, bundleinstance) " +
                         "VALUES (" +
                         "?, " +
                         "(SELECT id FROM portti_bundle WHERE name=?), " +
                         "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
                         "?, ?, " +
-                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
                         "?)");
 
         statement.setLong(1, viewId);
@@ -38,7 +37,6 @@ public class V1_1_0__add_selected_featuredata_to_views  implements JdbcMigration
         statement.setString(4, "{}");
         statement.setString(5, "{}");
         statement.setString(6, SELECTED_FEATUREDATA);
-        statement.setString(7, SELECTED_FEATUREDATA);
 
         try {
             statement.execute();

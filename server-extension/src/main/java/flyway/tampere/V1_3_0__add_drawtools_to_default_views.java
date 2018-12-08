@@ -18,7 +18,6 @@ import java.util.List;
 
 public class V1_3_0__add_drawtools_to_default_views implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_3_0__add_drawtools_to_default_views.class);
-    private static final String PATH = "/Oskari/packages/mapping/ol2/";
     private static final String BUNDLE_ID = "drawtools";
     private int updatedViewCount = 0;
     private ViewService service = null;

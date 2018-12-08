@@ -91,17 +91,15 @@ public class V1_2_0__replace_layerselector2_bundle_to_hierarchical_layerlist imp
         final String sql = "UPDATE portti_view_bundle_seq " +
                 "SET " +
                 "    bundle_id=?, " +
-                "    startup=?, " +
                 "    bundleinstance=?" +
                 "WHERE bundle_id = ? and view_id=?";
 
         try (PreparedStatement statement =
                      conn.prepareStatement(sql)){
             statement.setLong(1, newBundle.getBundleId());
-            statement.setString(2, newBundle.getStartup());
-            statement.setString(3, newBundle.getName());
-            statement.setLong(4, oldBundle.getBundleId());
-            statement.setLong(5, viewId);
+            statement.setString(2, newBundle.getName());
+            statement.setLong(3, oldBundle.getBundleId());
+            statement.setLong(4, viewId);
             statement.execute();
         }
     }
