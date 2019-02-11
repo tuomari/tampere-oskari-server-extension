@@ -12,12 +12,20 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <oskari.version>1.49.0</oskari.version>
-        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
-        <postgresql.version>42.2.5</postgresql.version>
-        <java.version>1.7</java.version>
-        <junit.version>4.11</junit.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <java.version>1.8</java.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>oskari-parent</artifactId>
+                <version>${oskari.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
@@ -37,15 +45,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.2</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
