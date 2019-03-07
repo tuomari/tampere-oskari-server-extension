@@ -36,7 +36,7 @@ public class AuthDebugHandler {
         Map<String, String> headers = new HashMap<>();
         while(names.hasMoreElements()) {
             final String key = names.nextElement().toLowerCase();
-            if(key.startsWith("auth") || "true".equalsIgnoreCase(params.getHttpParam("all"))) {
+            if(key.startsWith("x_") || "true".equalsIgnoreCase(params.getHttpParam("all"))) {
                 headers.put(key, UserDetailsHelper.getHeader(params.getRequest(), key));
             }
         }
