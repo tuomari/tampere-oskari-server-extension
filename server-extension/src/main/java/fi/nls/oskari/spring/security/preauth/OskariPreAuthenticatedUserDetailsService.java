@@ -1,4 +1,4 @@
-package fi.tampere.spring.security.preauth;
+package fi.nls.oskari.spring.security.preauth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

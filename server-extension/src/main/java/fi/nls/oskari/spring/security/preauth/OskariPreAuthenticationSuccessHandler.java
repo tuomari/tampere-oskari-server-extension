@@ -1,4 +1,4 @@
-package fi.tampere.spring.security.preauth;
+package fi.nls.oskari.spring.security.preauth;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -35,7 +33,7 @@ public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 
         if (!(principal instanceof OskariUserDetails)) {
             throw new IllegalArgumentException(
-                    "Expected fi.tampere.spring.security.preauth.OskariUserDetails, "
+                    "Expected OskariUserDetails, "
                             + "got: " + principal.getClass().getName());
         }
         OskariUserDetails oud = (OskariUserDetails) principal;

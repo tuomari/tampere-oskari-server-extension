@@ -1,4 +1,4 @@
-package fi.tampere.spring.security.preauth;
+package fi.nls.oskari.spring.security.preauth;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;

@@ -1,4 +1,4 @@
-package fi.tampere.spring.security.preauth;
+package fi.nls.oskari.spring.security.preauth;
 
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;

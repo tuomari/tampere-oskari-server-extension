@@ -1,4 +1,4 @@
-package fi.tampere.spring;
+package fi.nls.oskari.spring;
 
 import fi.nls.oskari.MapController;
 import fi.nls.oskari.control.ActionParameters;
