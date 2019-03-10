@@ -32,17 +32,23 @@ public class UserDetailsHelper {
         user.setScreenname(getHeader(request, user.getEmail()));
 
         String rolesHeader = getHeader(request, "X_MPO.ROLES");
-        user.setRoles(Arrays.asList(rolesHeader.split(","))
-                .stream()
-                .filter(r -> r != null)
-                .map(r -> r.trim())
-                .filter(r -> !r.isEmpty())
-                .map(r -> {
-                    Role role = new Role();
-                    role.setName(r);
-                    return role;
-                })
-                .collect(Collectors.toSet()));
+        // set roles based on header
+        if(rolesHeader == null) {
+            user.setRoles(Arrays.asList(rolesHeader.split(","))
+                    .stream()
+                    .filter(r -> r != null)
+                    .map(r -> r.trim())
+                    .filter(r -> !r.isEmpty())
+                    .map(r -> {
+                        Role role = new Role();
+                        role.setName("ROLE_" + r);
+                        return role;
+                    })
+                    .collect(Collectors.toSet()));
+        }
+
+        // add default role for logged in user
+        user.addRole(Role.getDefaultUserRole());
 
         return user;
     }
