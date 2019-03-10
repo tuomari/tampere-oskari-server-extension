@@ -29,7 +29,7 @@ public class UserDetailsHelper {
         user.setEmail(getHeader(request, "X_EMAIL"));
         user.setFirstname(getHeader(request, "X_FIRSTNAME"));
         user.setLastname(getHeader(request, "X_LASTNAME"));
-        user.setScreenname(getHeader(request, user.getEmail()));
+        user.setScreenname(user.getEmail());
 
         String rolesHeader = getHeader(request, "X_MPO.ROLES");
         // set roles based on header
