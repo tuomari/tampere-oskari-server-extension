@@ -33,7 +33,7 @@ public class UserDetailsHelper {
 
         String rolesHeader = getHeader(request, "X_MPO.ROLES");
         // set roles based on header
-        if(rolesHeader == null) {
+        if(rolesHeader != null) {
             user.setRoles(Arrays.asList(rolesHeader.split(","))
                     .stream()
                     .filter(r -> r != null)

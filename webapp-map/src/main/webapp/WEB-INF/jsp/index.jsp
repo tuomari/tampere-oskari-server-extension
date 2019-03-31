@@ -144,16 +144,14 @@
                 <%-- test start --%>
                 <c:choose>
                     <c:when test="${fn:startsWith(userIp,'10.')}">
-                            <c:if test="${!empty _login_uri_saml}">
-                                <a href="${pageContext.request.contextPath}${_login_uri_saml}">Kirjaudu SAMLilla</a><hr />
-                            </c:if>
+                        <a href="${pageContext.request.contextPath}/auth">Kirjaudu TRE tunnuksilla</a><hr />
                     </c:when>
                 </c:choose>
-                <c:if test="${!empty param.login && !empty _login_uri && !empty _login_field_user}">
-                    <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
-                        <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="Username" autofocus
+                <c:if test="${!empty param.moi}">
+                    <form action='${pageContext.request.contextPath}/j_security_check' method="post" accept-charset="UTF-8">
+                        <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
                                 required>
-                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="Password" required>
+                        <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <input type="submit" id="submit" value="Log in">
                     </form>

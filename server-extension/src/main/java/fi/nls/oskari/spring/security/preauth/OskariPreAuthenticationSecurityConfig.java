@@ -1,5 +1,6 @@
 package fi.nls.oskari.spring.security.preauth;
 
+import fi.nls.oskari.spring.SpringEnvHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +18,12 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Profile("preauth")
 @Configuration
 @EnableWebSecurity
-@Order()
+@Order(0)
+// IMPORTANT: This must be before formLogin or /auth doesn't trigger this
 public class OskariPreAuthenticationSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private SpringEnvHelper env;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,13 +37,6 @@ public class OskariPreAuthenticationSecurityConfig extends WebSecurityConfigurer
 
         // Disable HSTS header, we don't want to force HTTPS for ALL requests
         http.headers().httpStrictTransportSecurity().disable();
-
-        // Enable cookie based CRSF tokens (requires frontend to send them back)
-        http.csrf()
-                // ignoring logout here doesn't help for some reason. It's ignored in OskariCommonSecurityConfig
-                // if not ignored, logout fails even if everything else works
-                //.ignoringAntMatchers("/logout")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
         OskariRequestHeaderAuthenticationFilter filter = new OskariRequestHeaderAuthenticationFilter();
         filter.setAuthenticationSuccessHandler(new OskariPreAuthenticationSuccessHandler());
@@ -54,21 +52,16 @@ public class OskariPreAuthenticationSecurityConfig extends WebSecurityConfigurer
 
         String authorizeUrl = PropertyUtil.get("oskari.authorize.url", "/auth");
 
-        // use authorization for ALL requests
+        // use authorization for requests matching /auth
         http.authorizeRequests()
                 // IF accessing /auth -> require authentication (== headers)
-                .antMatchers(authorizeUrl).authenticated()
-                // Requests can be done anonymously
-                .anyRequest().permitAll();
+                .antMatchers(authorizeUrl).authenticated();
 
-        // Add the preauth filter listening to /auth paths
-        http
-                .requestMatchers()
-                .antMatchers(authorizeUrl)
-                .and()
+        http.antMatcher(authorizeUrl)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest().authenticated();
+
     }
 
     @Autowired
