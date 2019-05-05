@@ -22,6 +22,10 @@ public class AuthHandler {
     public RedirectView index(@OskariParam ActionParameters params,
                               RedirectAttributes attributes) {
         LOG.info("User logged in:", params.getRequest().getHeader("X_EMAIL"));
+        if(params.getResponse().isCommitted()) {
+            // to prevent errors in log -> request has already been handled
+            return null;
+        }
         String url = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
         return new RedirectView (url);
     }
