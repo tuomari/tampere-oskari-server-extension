@@ -147,7 +147,7 @@
                         <a href="${pageContext.request.contextPath}/auth">Kirjaudu TRE tunnuksilla</a><hr />
                     </c:when>
                 </c:choose>
-                <c:if test="${!empty param.moi}">
+                <c:if test="${!empty param.login}">
                     <form action='${pageContext.request.contextPath}/j_security_check' method="post" accept-charset="UTF-8">
                         <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
                                 required>
