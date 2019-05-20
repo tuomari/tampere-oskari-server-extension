@@ -65,6 +65,7 @@
     <modules>
         <module>server-extension</module>
         <module>tampere-resources</module>
+        <module>file-download</module>
         <module>webapp-map</module>
         <module>webapp-transport</module>
     </modules>
