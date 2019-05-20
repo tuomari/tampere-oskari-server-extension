@@ -2,6 +2,8 @@ package fi.nls.oskari.spring.security.preauth;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
  */
 public class UserDetailsHelper {
 
+    private final static Logger LOG = LogFactory.getLogger(UserDetailsHelper.class);
     /**
      * Parses request headers for user info like:
      * "auth-email":"asdf@asdf.fi"
@@ -49,6 +52,7 @@ public class UserDetailsHelper {
 
         // add default role for logged in user
         user.addRole(Role.getDefaultUserRole());
+        LOG.info("Parsed roles for user (", user.getEmail(),"):", user.getRoles());
 
         return user;
     }
