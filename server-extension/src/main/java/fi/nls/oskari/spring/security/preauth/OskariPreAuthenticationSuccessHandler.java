@@ -42,7 +42,7 @@ public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticati
         try {
             user = getUser(oud);
             if (user.getId() == -1) {
-                userService.createUser(user);
+                userService.saveUser(user);
                 // the user returned by createUser() doesn't have roles so find the user with email
                 user = userService.getUserByEmail(user.getEmail());
             } else {
@@ -65,14 +65,13 @@ public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticati
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         if (user == null) {
             user = oud.getUser();
-            // TODO: user.getAttribute("ROLES")
-            user.addRole(Role.getDefaultUserRole());
             user.setAttribute("created", format.format(new Date()));
         } else {
             // copy data that we got from headers
             user.setFirstname(oud.getUser().getFirstname());
             user.setLastname(oud.getUser().getLastname());
             user.setScreenname(oud.getUser().getScreenname());
+            user.setRoles(oud.getUser().getRoles());
             // merge attributes
             JSONHelper.merge(user.getAttributesJSON(), oud.getUser().getAttributesJSON());
         }
