@@ -7,6 +7,7 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.util.FlywayHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * Created by markokuo on 7.9.2015.
@@ -26,7 +28,11 @@ public class V1_0_5__add_vectorlayer_plugin_to_mapfull_bundle_config implements 
 
     public void migrate(Connection connection)
             throws Exception {
-        updateView(1);
+
+        final List<Long> views = FlywayHelper.getUserAndDefaultViewIds(connection);
+        for(Long viewId : views){
+            updateView(viewId);
+        }
     }
 
     private void updateView(long viewId)
