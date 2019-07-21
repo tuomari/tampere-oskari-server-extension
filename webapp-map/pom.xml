@@ -41,7 +41,6 @@
             <artifactId>icu4j</artifactId>
             <version>51.1</version>
         </dependency>
-
         <!-- oskari -->
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>

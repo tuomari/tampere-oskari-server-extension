@@ -3,7 +3,6 @@ package fi.tampere.filedl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -13,15 +12,18 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.json.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @OskariActionRoute("UploadFile")
@@ -46,10 +48,13 @@ public class UploadFile extends RestActionHandler {
         List<FileItem> files = fileItems.stream()
                 .filter(f -> !f.isFormField())
                 .collect(Collectors.toList());
+
+        Map<String, String> parameters = getFormParams(fileItems);
+        String layerId = parameters.get("layer");
         try {
-            Path path = ensurePath(params.getRequiredParam("layer"));
+            Path path = ensurePath(layerId);
             List<String> writtenFiles = saveFiles(files, path);
-            ResponseHelper.writeResponse(params, LOG.getAsString(writtenFiles));
+            ResponseHelper.writeResponse(params, new JSONArray(writtenFiles));
         } finally {
             fileItems.forEach(FileItem::delete);
         }
@@ -90,7 +95,7 @@ public class UploadFile extends RestActionHandler {
             throw new ActionException("Failed to read request", e);
         }
     }
-/*
+
     private Map<String, String> getFormParams(List<FileItem> fileItems) {
         return fileItems.stream()
                 .filter(f -> f.isFormField())
@@ -98,5 +103,5 @@ public class UploadFile extends RestActionHandler {
                         f -> f.getFieldName(),
                         f -> new String(f.get(), StandardCharsets.UTF_8)));
     }
- */
+
 }
