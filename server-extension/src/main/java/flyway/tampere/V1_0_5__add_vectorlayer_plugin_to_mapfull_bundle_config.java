@@ -3,8 +3,8 @@ package flyway.tampere;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.util.JSONHelper;
@@ -21,11 +21,12 @@ import java.sql.Connection;
  */
 public class V1_0_5__add_vectorlayer_plugin_to_mapfull_bundle_config implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_5__add_vectorlayer_plugin_to_mapfull_bundle_config.class);
-    private ViewService service = new ViewServiceIbatisImpl();
+    private ViewService service;
     private static final String PLUGIN_NAME = "Oskari.mapframework.mapmodule.VectorLayerPlugin";
 
     public void migrate(Connection connection)
             throws Exception {
+        service = new AppSetupServiceMybatisImpl();
         updateView(1);
     }
 

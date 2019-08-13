@@ -5,8 +5,6 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
@@ -22,16 +20,13 @@ public class V1_2_1__remove_layerselection_bundle_from_default_views implements 
     private static final String BUNDLE_LAYERSELECTION2 = "layerselection2";
 
     private int updatedViewCount = 0;
-    private ViewService service = null;
 
     public void migrate(Connection connection) throws Exception {
-        service =  new ViewServiceIbatisImpl();
         try {
             updateViews(connection);
         }
         finally {
             LOG.info("Updated views:", updatedViewCount);
-            service = null;
         }
     }
 

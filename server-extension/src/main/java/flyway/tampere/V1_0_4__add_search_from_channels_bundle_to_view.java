@@ -2,23 +2,22 @@ package flyway.tampere;
 
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.view.modifier.ViewModifier;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
  * Created by markokuo on 7.9.2015.
  */
 public class V1_0_4__add_search_from_channels_bundle_to_view implements JdbcMigration {
-    private ViewService service = new ViewServiceIbatisImpl();
+    private ViewService service;
 
     public void migrate(Connection connection)
             throws Exception {
+        service = new AppSetupServiceMybatisImpl();
         // check existing value before adding
         final boolean bundleExistsInView = bundleExistsInView(1);
         if (!bundleExistsInView) {
