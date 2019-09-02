@@ -45,8 +45,12 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
-    public void updateMetadata(WFSAttachment file) throws ServiceException {
-        // TODO: impl update everything but file contents
+    public void updateMetadata(WFSAttachment file) {
+        try (SqlSession session = factory.openSession(false)) {
+            // save to db
+            FileMapper mapper = session.getMapper(MAPPER);
+            mapper.update(file);
+        }
     }
 
     public List<WFSAttachment> getFiles(int layerId) {

@@ -34,4 +34,13 @@ public interface FileMapper {
                 "VALUES (#{layerId}, #{file.featureId}, #{file.locale}, #{file.fileExtension})")
         @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
         void insertFile(@Param("layerId") int layerId, @Param("file") WFSAttachment file);
+
+
+        @Update("UPDATE tampere_layer_attachment SET " +
+                "locale=#{locale} " +
+                "WHERE id=#{id}")
+        void update(final WFSAttachment file);
+
+        @Delete("DELETE FROM tampere_layer_attachment WHERE id=#{id}")
+        void deleteFile(int id);
 }
