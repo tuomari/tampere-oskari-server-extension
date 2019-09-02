@@ -5,19 +5,11 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.fileupload.FileItem;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileServiceMybatisImpl extends FileService {
 
@@ -25,6 +17,7 @@ public class FileServiceMybatisImpl extends FileService {
     private static final Logger LOG = LogFactory.getLogger(FileServiceMybatisImpl.class);
 
     private final SqlSessionFactory factory;
+
     public FileServiceMybatisImpl() {
         this(DatasourceHelper.getInstance().getDataSource());
     }
@@ -38,4 +31,35 @@ public class FileServiceMybatisImpl extends FileService {
             factory = MyBatisHelper.initMyBatis(ds, MAPPER);
         }
     }
+
+    public WFSAttachment insertFile(int layerId, WFSAttachmentFile file) throws ServiceException {
+        try (SqlSession session = factory.openSession(false)) {
+            // save to db
+            FileMapper mapper = session.getMapper(MAPPER);
+            mapper.insertFile(layerId, file);
+            // save to filesystem
+            WFSAttachment attachment = super.insertFile(layerId, file);
+            session.commit();
+            // return result
+            return attachment;
+        }
+    }
+
+    public void updateMetadata(WFSAttachment file) throws ServiceException {
+        // TODO: impl update everything but file contents
+    }
+
+    public List<WFSAttachment> getFiles(int layerId) {
+        try (SqlSession session = factory.openSession()) {
+            return session.getMapper(MAPPER).findByLayer(layerId);
+        }
+    }
+
+    public List<WFSAttachment> getFiles(int layerId, String featureId) {
+        try (SqlSession session = factory.openSession()) {
+            return session.getMapper(MAPPER).findByLayerAndFeature(layerId, featureId);
+        }
+    }
+
+
 }

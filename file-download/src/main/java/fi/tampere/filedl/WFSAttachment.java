@@ -7,6 +7,15 @@ public class WFSAttachment {
     private String locale;
     private String fileExtension;
 
+    public WFSAttachment getMetadata() {
+        WFSAttachment attachment = new WFSAttachment();
+        attachment.setId(getId());
+        attachment.setFeatureId(getFeatureId());
+        attachment.setLocale(getLocale());
+        attachment.setFileExtension(getFileExtension());
+        return attachment;
+    }
+
     public int getId() {
         return id;
     }

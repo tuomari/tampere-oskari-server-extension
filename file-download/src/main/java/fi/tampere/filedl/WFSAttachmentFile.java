@@ -13,6 +13,7 @@ public class WFSAttachmentFile extends WFSAttachment {
     public InputStream getFile() {
         return file;
     }
+
     public void setFile(InputStream in) {
         file = in;
     }

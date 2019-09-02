@@ -1,6 +1,7 @@
 package fi.tampere.filedl;
 
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class FileService {
         return null;
     }
 
-    public List<WFSAttachment> getFiles(int layerId) throws ServiceException {
+    public List<WFSAttachment> getFiles(int layerId) {
 
         Path path = Paths.get(fileStorage, Integer.toString(layerId));
         if (!Files.exists(path)) {
@@ -33,28 +34,25 @@ public class FileService {
                     .map(f -> new WFSAttachment())
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new ServiceException("Unable to read files", e);
+            throw new ServiceRuntimeException("Unable to read files", e);
         }
     }
 
-    public List<WFSAttachment> getFiles(int layerId, String featureId) throws ServiceException {
+    public List<WFSAttachment> getFiles(int layerId, String featureId) {
         return getFiles(layerId).stream()
                 .filter(f -> f.getFeatureId().equalsIgnoreCase(featureId))
                 .collect(Collectors.toList());
     }
 
 
-    public WFSAttachment saveFile(int layerId, WFSAttachmentFile file) throws ServiceException {
+    public WFSAttachment insertFile(int layerId, WFSAttachmentFile file) throws ServiceException {
         Path path = ensurePath(Integer.toString(layerId));
         try {
-            // TODO: save db
             // save file
             String filename = file.getId() + "." + file.getFileExtension();
             Path mpath = Paths.get(path.toString(), filename);
             Files.copy(file.getFile(), mpath);
-            // TODO: WFSAttachmentFile -> WFSAttachment
-            file.setFile(null);
-            return file;
+            return file.getMetadata();
         } catch (IOException e) {
             throw new ServiceException("Unable to save files", e);
         }
@@ -66,7 +64,7 @@ public class FileService {
             try {
                 Files.createDirectory(path);
             } catch (Exception e) {
-                throw new ServiceException("Unable to create folder for " + layer, e );
+                throw new ServiceException("Unable to create folder for " + layer, e);
             }
         }
         return path;
