@@ -111,7 +111,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             for (FileItem f : fileItems) {
                 WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream());
                 file.setFileExtension(f.getName());
-                writtenFiles.add(service.saveFile(layerId, file));
+                writtenFiles.add(service.insertFile(layerId, file));
             }
 
             ResponseHelper.writeResponse(params, new JSONArray(MAPPER.writeValueAsString(writtenFiles)));
