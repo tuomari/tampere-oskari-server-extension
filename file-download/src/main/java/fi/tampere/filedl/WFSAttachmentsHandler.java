@@ -40,6 +40,8 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     private static final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    private static final String PARAM_LAYER = "layerId";
+
     private FileService service;
 
     public void init() {
@@ -48,7 +50,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     public void handleGet(ActionParameters params) throws ActionException {
-        int layerId = params.getRequiredParamInt("layerId");
+        int layerId = params.getRequiredParamInt(PARAM_LAYER);
         int fileId = params.getHttpParam("fileId", -1);
         // return file
         if (fileId != -1) {
@@ -99,9 +101,10 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         params.requireLoggedInUser();
         // TODO: check permissions
 
-        List<FileItem> fileItems = getFileItems(params.getRequest());
+        List<FileItem> fileItems = parseRequest(params.getRequest());
         Map<String, String> parameters = getFormParams(fileItems);
-        int layerId = ConversionHelper.getInt(parameters.get("layer"), -1);
+        fileItems = getFiles(fileItems);
+        int layerId = ConversionHelper.getInt(parameters.get(PARAM_LAYER), -1);
         if (layerId == -1) {
             throw new ActionParamsException("Layer id required");
         }
@@ -123,16 +126,19 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
 
-    private List<FileItem> getFileItems(HttpServletRequest request) throws ActionException {
+    private List<FileItem> parseRequest(HttpServletRequest request) throws ActionException {
         try {
             request.setCharacterEncoding("UTF-8");
             ServletFileUpload upload = new ServletFileUpload(diskFileItemFactory);
-            return upload.parseRequest(request).stream()
-                    .filter(f -> !f.isFormField())
-                    .collect(Collectors.toList());
+            return upload.parseRequest(request);
         } catch (UnsupportedEncodingException | FileUploadException e) {
             throw new ActionException("Failed to read request", e);
         }
+    }
+    private List<FileItem> getFiles(List<FileItem> fileItems) {
+        return fileItems.stream()
+                .filter(f -> !f.isFormField())
+                .collect(Collectors.toList());
     }
 
     private Map<String, String> getFormParams(List<FileItem> fileItems) {
