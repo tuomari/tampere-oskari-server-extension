@@ -1,5 +1,7 @@
 package fi.tampere.filedl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WFSAttachment {
 
     private int id = -1;
@@ -7,6 +9,7 @@ public class WFSAttachment {
     private String locale;
     private String fileExtension;
 
+    @JsonIgnore
     public WFSAttachment getMetadata() {
         WFSAttachment attachment = new WFSAttachment();
         attachment.setId(getId());

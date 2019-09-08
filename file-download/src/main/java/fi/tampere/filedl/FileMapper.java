@@ -32,7 +32,7 @@ public interface FileMapper {
 
         @Insert("INSERT INTO tampere_layer_attachment (layer_id, feature_id, locale, file_extension) " +
                 "VALUES (#{layerId}, #{file.featureId}, #{file.locale}, #{file.fileExtension})")
-        @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
+        @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="file.id")
         void insertFile(@Param("layerId") int layerId, @Param("file") WFSAttachment file);
 
 

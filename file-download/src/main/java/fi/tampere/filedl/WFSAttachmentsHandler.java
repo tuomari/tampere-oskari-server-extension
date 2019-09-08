@@ -113,7 +113,9 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             List<WFSAttachment> writtenFiles = new ArrayList<>(fileItems.size());
             for (FileItem f : fileItems) {
                 WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream());
-                file.setFileExtension(f.getName());
+                String[] name = parseFeatureID(f.getName());
+                file.setFeatureId(name[0]);
+                file.setFileExtension(name[1]);
                 file.setLocale(parameters.get("locale_" + f.getName()));
                 writtenFiles.add(service.insertFile(layerId, file));
             }
@@ -126,6 +128,19 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         }
     }
 
+    private String[] parseFeatureID(String filename) {
+        String[] name = filename.split("\\.");
+        if (name.length > 2) {
+            String ext = name[name.length - 1];
+            String id = filename.substring(0, filename.length() - ext.length() - 1);
+            return new String[] { id, ext };
+        }
+        if (name.length < 2) {
+            return new String[] { name[0], "" };
+        }
+        return name;
+    }
+
 
     private List<FileItem> parseRequest(HttpServletRequest request) throws ActionException {
         try {
@@ -136,6 +151,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             throw new ActionException("Failed to read request", e);
         }
     }
+
     private List<FileItem> getFiles(List<FileItem> fileItems) {
         return fileItems.stream()
                 .filter(f -> !f.isFormField())
