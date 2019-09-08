@@ -114,6 +114,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             for (FileItem f : fileItems) {
                 WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream());
                 file.setFileExtension(f.getName());
+                file.setLocale(parameters.get("locale_" + f.getName()));
                 writtenFiles.add(service.insertFile(layerId, file));
             }
 
