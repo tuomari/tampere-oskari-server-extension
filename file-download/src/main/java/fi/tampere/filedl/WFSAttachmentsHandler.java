@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -51,10 +52,12 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     private String getContentType(String extension) {
-        return "application/json;charset=UTF-8";
+        // return "application/json;charset=UTF-8";
+        return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
     }
     private String getFilename(WFSAttachment file) {
-        return "file." + file.getFileExtension();
+        return file.getLayerId() + "_" + file.getFeatureId() + "_"
+                + file.getId() + "." + file.getFileExtension();
     }
 
     public void handleGet(ActionParameters params) throws ActionException {
