@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -49,6 +50,13 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         service = new FileServiceMybatisImpl();
     }
 
+    private String getContentType(String extension) {
+        return "application/json;charset=UTF-8";
+    }
+    private String getFilename(WFSAttachment file) {
+        return "file." + file.getFileExtension();
+    }
+
     public void handleGet(ActionParameters params) throws ActionException {
         int layerId = params.getHttpParam(PARAM_LAYER, -1);
         if (layerId == -1) {
@@ -60,15 +68,16 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         int fileId = params.getHttpParam("fileId", -1);
         // return file
         if (fileId != -1) {
-            try {
-                WFSAttachmentFile file = service.getFile(layerId, fileId);
-                // from file.getExtension()?
-                params.getResponse().setContentType("application/json;charset=UTF-8");
+            try (WFSAttachmentFile file = service.getFile(layerId, fileId)) {
+                HttpServletResponse response = params.getResponse();
+                response.setContentType(getContentType(file.getFileExtension()));
+                // attachment header
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file) + "\"");
                 IOHelper.copy(
                         file.getFile(),
-                        params.getResponse().getOutputStream());
-                params.getResponse().getOutputStream().flush();
-                params.getResponse().getOutputStream().close();
+                        response.getOutputStream());
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
                 return;
             } catch (IOException | ServiceException e) {
                 throw new ActionException("Error reading file", e);
@@ -132,6 +141,16 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         } finally {
             fileItems.forEach(FileItem::delete);
         }
+    }
+
+    @Override
+    public void handlePut(ActionParameters params) throws ActionException {
+        params.requireLoggedInUser();
+        // TODO: check permissions
+        WFSAttachment file = new WFSAttachment();
+        file.setId(params.getRequiredParamInt("fileId"));
+        file.setLocale(params.getRequiredParam("locale"));
+        service.updateMetadata(file);
     }
 
     private String[] parseFeatureID(String filename) {

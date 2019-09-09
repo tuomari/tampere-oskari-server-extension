@@ -71,5 +71,15 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
+    public WFSAttachmentFile getFile(int layerId, int fileId) throws ServiceException {
+        WFSAttachmentFile file = super.getFile(layerId, fileId);
+        try (SqlSession session = factory.openSession()) {
+            WFSAttachment metadata = session.getMapper(MAPPER).findFile(fileId);
+            file.setFeatureId(metadata.getFeatureId());
+            file.setLocale(metadata.getLocale());
+            file.setFileExtension(metadata.getFileExtension());
+            return file;
+        }
+    }
 
 }

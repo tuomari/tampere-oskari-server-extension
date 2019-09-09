@@ -17,8 +17,23 @@ public class FileService {
     private final String fileStorage = PropertyUtil.get("file.storage.folder", "/files");
 
     public WFSAttachmentFile getFile(int layerId, int fileId) throws ServiceException {
-        // TODO: return inputstream to file
-        return null;
+
+        Path path = Paths.get(fileStorage, Integer.toString(layerId), Integer.toString(fileId));
+        if (!Files.exists(path)) {
+            throw new ServiceException("File not found");
+        }
+        try {
+            // TODO: remember to close the inputstream after
+            WFSAttachmentFile file = new WFSAttachmentFile(Files.newInputStream(path));
+            file.setLayerId(layerId);
+            file.setId(fileId);
+
+            // TODO: return inputstream to file
+            return file;
+        } catch (IOException e) {
+            throw new ServiceException("Error reading file", e);
+
+        }
     }
     public List<Integer> getLayersWithFiles() {
         throw new ServiceRuntimeException("Not implemented");
@@ -59,6 +74,10 @@ public class FileService {
         } catch (IOException e) {
             throw new ServiceException("Unable to save files", e);
         }
+    }
+
+    public void updateMetadata(WFSAttachment file) {
+        throw new ServiceRuntimeException("Not implemented");
     }
 
     private Path ensurePath(String layer) throws ServiceException {

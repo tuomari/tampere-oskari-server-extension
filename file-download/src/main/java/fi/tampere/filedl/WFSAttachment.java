@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class WFSAttachment {
 
     private int id = -1;
+    private int layerId = -1;
     private String featureId;
     private String locale;
     private String fileExtension;
@@ -25,6 +26,14 @@ public class WFSAttachment {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getLayerId() {
+        return layerId;
+    }
+
+    public void setLayerId(int layerId) {
+        this.layerId = layerId;
     }
 
     public String getFeatureId() {

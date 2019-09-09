@@ -6,32 +6,45 @@ import java.util.List;
 
 public interface FileMapper {
 
+        @Select("SELECT distinct layer_id FROM tampere_layer_attachment")
+        List<Integer> findLayersWithFiles();
+
         @Results(id = "FileResult", value = {
                 @Result(property="id", column="id", id=true),
                 @Result(property="featureId", column="feature_id"),
+                @Result(property="layerId", column="layer_id"),
                 @Result(property="locale", column="locale"),
                 @Result(property="fileExtension", column="file_extension")
         })
         @Select("SELECT id,"
                 + "feature_id,"
+                + "layer_id,"
                 + "locale,"
                 + "file_extension "
                 + "FROM tampere_layer_attachment "
                 + "WHERE layer_id = #{id}")
         List<WFSAttachment> findByLayer(@Param("id") int id);
 
-        @Select("SELECT distinct layer_id FROM tampere_layer_attachment")
-        List<Integer> findLayersWithFiles();
-
         @ResultMap("FileResult")
         @Select("SELECT id,"
                 + "feature_id,"
+                + "layer_id,"
                 + "locale,"
                 + "file_extension "
                 + "FROM tampere_layer_attachment "
                 + "WHERE layer_id = #{layerId} "
                 + "AND feature_id = #{featureId}")
         List<WFSAttachment> findByLayerAndFeature(@Param("layerId") int layerId, @Param("featureId") String featureId);
+
+        @ResultMap("FileResult")
+        @Select("SELECT id,"
+                + "feature_id,"
+                + "layer_id,"
+                + "locale,"
+                + "file_extension "
+                + "FROM tampere_layer_attachment "
+                + "WHERE layer_id = #{id}")
+        WFSAttachment findFile(@Param("id") int fileId);
 
         @Insert("INSERT INTO tampere_layer_attachment (layer_id, feature_id, locale, file_extension) " +
                 "VALUES (#{layerId}, #{file.featureId}, #{file.locale}, #{file.fileExtension})")
