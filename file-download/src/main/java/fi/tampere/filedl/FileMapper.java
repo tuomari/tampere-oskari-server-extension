@@ -20,6 +20,9 @@ public interface FileMapper {
                 + "WHERE layer_id = #{id}")
         List<WFSAttachment> findByLayer(@Param("id") int id);
 
+        @Select("SELECT distinct layer_id FROM tampere_layer_attachment")
+        List<Integer> findLayersWithFiles();
+
         @ResultMap("FileResult")
         @Select("SELECT id,"
                 + "feature_id,"

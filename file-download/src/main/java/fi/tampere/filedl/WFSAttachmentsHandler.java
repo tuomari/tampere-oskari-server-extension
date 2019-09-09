@@ -50,7 +50,13 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     public void handleGet(ActionParameters params) throws ActionException {
-        int layerId = params.getRequiredParamInt(PARAM_LAYER);
+        int layerId = params.getHttpParam(PARAM_LAYER, -1);
+        if (layerId == -1) {
+            // return list of layer ids with attachments
+            List<Integer> layerIds = service.getLayersWithFiles();
+            ResponseHelper.writeResponse(params, new JSONArray(layerIds));
+            return;
+        }
         int fileId = params.getHttpParam("fileId", -1);
         // return file
         if (fileId != -1) {

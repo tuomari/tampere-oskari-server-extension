@@ -20,6 +20,9 @@ public class FileService {
         // TODO: return inputstream to file
         return null;
     }
+    public List<Integer> getLayersWithFiles() {
+        throw new ServiceRuntimeException("Not implemented");
+    }
 
     public List<WFSAttachment> getFiles(int layerId) {
 

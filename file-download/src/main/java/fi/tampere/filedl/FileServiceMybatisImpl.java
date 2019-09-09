@@ -53,6 +53,12 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
+    public List<Integer> getLayersWithFiles() {
+        try (SqlSession session = factory.openSession()) {
+            return session.getMapper(MAPPER).findLayersWithFiles();
+        }
+    }
+
     public List<WFSAttachment> getFiles(int layerId) {
         try (SqlSession session = factory.openSession()) {
             return session.getMapper(MAPPER).findByLayer(layerId);
