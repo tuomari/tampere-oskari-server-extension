@@ -67,7 +67,7 @@ public class FileService {
         Path path = ensurePath(Integer.toString(file.getLayerId()));
         try {
             // save file
-            String filename = file.getId() + "." + file.getFileExtension();
+            String filename = Integer.toString(file.getId());
             Path mpath = Paths.get(path.toString(), filename);
             Files.copy(file.getFile(), mpath);
             return file.getMetadata();

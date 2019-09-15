@@ -43,7 +43,7 @@ public interface FileMapper {
                 + "locale,"
                 + "file_extension "
                 + "FROM tampere_layer_attachment "
-                + "WHERE layer_id = #{id}")
+                + "WHERE id = #{id}")
         WFSAttachment findFile(@Param("id") int fileId);
 
         @Insert("INSERT INTO tampere_layer_attachment (layer_id, feature_id, locale, file_extension) " +
