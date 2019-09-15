@@ -5,8 +5,6 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
@@ -20,16 +18,13 @@ public class V1_3_0__add_drawtools_to_default_views implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_3_0__add_drawtools_to_default_views.class);
     private static final String BUNDLE_ID = "drawtools";
     private int updatedViewCount = 0;
-    private ViewService service = null;
 
     public void migrate(Connection connection) throws Exception {
-        service =  new ViewServiceIbatisImpl();
         try {
             updateViews(connection);
         }
         finally {
             LOG.info("Updated views:", updatedViewCount);
-            service = null;
         }
     }
 

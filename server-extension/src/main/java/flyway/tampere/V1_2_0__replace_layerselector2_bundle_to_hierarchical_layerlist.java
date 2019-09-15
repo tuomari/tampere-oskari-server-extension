@@ -12,11 +12,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.FlywayHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 
 
 public class V1_2_0__replace_layerselector2_bundle_to_hierarchical_layerlist implements JdbcMigration {
@@ -26,16 +22,13 @@ public class V1_2_0__replace_layerselector2_bundle_to_hierarchical_layerlist imp
     private static final String BUNDLE_HIERARCHICAL_LAYERLIST = "hierarchical-layerlist";
 
     private int updatedViewCount = 0;
-    private ViewService service = null;
 
     public void migrate(Connection connection) throws Exception {
-        service =  new ViewServiceIbatisImpl();
         try {
             updateViews(connection);
         }
         finally {
             LOG.info("Updated views:", updatedViewCount);
-            service = null;
         }
     }
 
