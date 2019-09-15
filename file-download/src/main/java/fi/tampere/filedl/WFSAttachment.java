@@ -15,6 +15,7 @@ public class WFSAttachment {
         WFSAttachment attachment = new WFSAttachment();
         attachment.setId(getId());
         attachment.setFeatureId(getFeatureId());
+        attachment.setLayerId(getLayerId());
         attachment.setLocale(getLocale());
         attachment.setFileExtension(getFileExtension());
         return attachment;
