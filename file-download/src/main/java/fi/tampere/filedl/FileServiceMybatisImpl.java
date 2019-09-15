@@ -32,13 +32,13 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
-    public WFSAttachment insertFile(int layerId, WFSAttachmentFile file) throws ServiceException {
+    public WFSAttachment insertFile(WFSAttachmentFile file) throws ServiceException {
         try (SqlSession session = factory.openSession(false)) {
             // save to db
             FileMapper mapper = session.getMapper(MAPPER);
-            mapper.insertFile(layerId, file);
+            mapper.insertFile(file);
             // save to filesystem
-            WFSAttachment attachment = super.insertFile(layerId, file);
+            WFSAttachment attachment = super.insertFile(file);
             session.commit();
             // return result
             return attachment;

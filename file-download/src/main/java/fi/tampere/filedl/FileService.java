@@ -63,8 +63,8 @@ public class FileService {
     }
 
 
-    public WFSAttachment insertFile(int layerId, WFSAttachmentFile file) throws ServiceException {
-        Path path = ensurePath(Integer.toString(layerId));
+    public WFSAttachment insertFile(WFSAttachmentFile file) throws ServiceException {
+        Path path = ensurePath(Integer.toString(file.getLayerId()));
         try {
             // save file
             String filename = file.getId() + "." + file.getFileExtension();
