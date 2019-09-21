@@ -6,8 +6,11 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -18,6 +21,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.oskari.log.AuditLog;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -51,15 +55,6 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         service = new FileServiceMybatisImpl();
     }
 
-    private String getContentType(String extension) {
-        // return "application/json;charset=UTF-8";
-        return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
-    }
-    private String getFilename(WFSAttachment file) {
-        return file.getLayerId() + "_" + file.getFeatureId() + "_"
-                + file.getId() + "." + file.getFileExtension();
-    }
-
     public void handleGet(ActionParameters params) throws ActionException {
         int layerId = params.getHttpParam(PARAM_LAYER, -1);
         if (layerId == -1) {
@@ -75,7 +70,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 HttpServletResponse response = params.getResponse();
                 response.setContentType(getContentType(file.getFileExtension()));
                 // attachment header
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file) + "\"");
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, params.getLocale().getLanguage()) + "\"");
                 IOHelper.copy(
                         file.getFile(),
                         response.getOutputStream());
@@ -116,7 +111,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
+        params.requireAdminUser();
         // TODO: check permissions
 
         List<FileItem> fileItems = parseRequest(params.getRequest());
@@ -143,6 +138,12 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 writtenFiles.add(service.insertFile(file));
             }
 
+            AuditLog.user(params.getClientIp(), params.getUser()).
+                    withParam("layer", layerId).
+                    withParam("files", writtenFiles.stream().map(
+                            f -> f.getFeatureId() + " (" + f.getLocale() + ")")
+                            .collect(Collectors.joining(","))).
+                    added(getName());
             ResponseHelper.writeResponse(params, new JSONArray(MAPPER.writeValueAsString(writtenFiles)));
         } catch (JSONException | IOException | ServiceException e) {
             throw new ActionException("Unable to save files", e);
@@ -153,12 +154,15 @@ public class WFSAttachmentsHandler extends RestActionHandler {
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
+        params.requireAdminUser();
         // TODO: check permissions
         WFSAttachment file = new WFSAttachment();
         file.setId(params.getRequiredParamInt("fileId"));
         file.setLocale(params.getRequiredParam("locale"));
         service.updateMetadata(file);
+        AuditLog.user(params.getClientIp(), params.getUser()).
+                withParam("id", file.getId()).
+                updated(getName());
     }
 
     private String[] parseFeatureID(String filename) {
@@ -174,6 +178,24 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         return name;
     }
 
+    private String getContentType(String extension) {
+        // return "application/json;charset=UTF-8";
+        return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
+    }
+    private String getFilename(WFSAttachment file, String lang) {
+        return getLayerName(file.getLayerId(), lang) + "_" + file.getFeatureId() + "_"
+                + file.getId() + "." + file.getFileExtension();
+    }
+
+    private String getLayerName(int id, String lang) {
+        try {
+            OskariLayer layer = OskariComponentManager.getComponentOfType(OskariLayerService.class).find(id);
+            return layer.getName(lang);
+        } catch (Exception e) {
+            LOG.warn(e, "Error getting layer name");
+        }
+        return Integer.toString(id);
+    }
 
     private List<FileItem> parseRequest(HttpServletRequest request) throws ActionException {
         try {
