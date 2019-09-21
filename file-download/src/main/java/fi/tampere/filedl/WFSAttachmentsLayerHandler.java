@@ -25,7 +25,7 @@ public class WFSAttachmentsLayerHandler extends RestActionHandler {
     public void handlePut(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         int layerId = params.getRequiredParamInt(PARAM_LAYER);
-        String attachmentKey = params.getRequiredParam("idProp");
+        String attachmentKey = params.getRequiredParam(KEY_ATTACHMENT_KEY);
         OskariLayerService service = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         OskariLayer layer = service.find(layerId);
         layer.addAttribute(KEY_ATTACHMENT_KEY, attachmentKey);
