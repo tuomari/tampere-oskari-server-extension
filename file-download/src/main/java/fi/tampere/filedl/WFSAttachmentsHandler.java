@@ -68,22 +68,12 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         // return file
         if (fileId != -1) {
             try (WFSAttachmentFile file = service.getFile(layerId, fileId)) {
-                HttpServletResponse response = params.getResponse();
-                response.setContentType(getContentType(file.getFileExtension()));
-                // attachment header
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, params.getLocale().getLanguage()) + "\"");
-                IOHelper.copy(
-                        file.getFile(),
-                        response.getOutputStream());
-                response.getOutputStream().flush();
-                response.getOutputStream().close();
+                writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
                 return;
             } catch (IOException | ServiceException e) {
                 throw new ActionException("Error reading file", e);
             }
         }
-        // TODO: download external file
-        // ...
         // list files
         String featureId = params.getHttpParam("featureId");
         JSONArray files = null;
@@ -91,7 +81,19 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             if (featureId == null) {
                 files = getFilesForLayer(layerId);
             } else if (featureId != null) {
-                files = getFilesForFeature(layerId, featureId);
+                String externalFile = params.getHttpParam("extID");
+                // download external file if param is present
+                if (externalFile != null) {
+                    try (WFSAttachmentFile file = service.getExternalFile(layerId, featureId, externalFile)) {
+                        writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
+                        return;
+                    } catch (IOException | ServiceException e) {
+                        throw new ActionException("Error reading file", e);
+                    }
+                } else {
+                    // or list files that are available for layer/feature
+                    files = getFilesForFeature(layerId, featureId);
+                }
             }
 
         } catch (Exception e) {
@@ -100,6 +102,17 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         }
 
         ResponseHelper.writeResponse(params, files);
+    }
+
+    private void writeFileResponse(WFSAttachmentFile file, HttpServletResponse response, String language) throws IOException {
+        response.setContentType(getContentType(file.getFileExtension()));
+        // attachment header
+        response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, language) + "\"");
+        IOHelper.copy(
+                file.getFile(),
+                response.getOutputStream());
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
     }
 
     private JSONArray getFilesForLayer(int layerId) throws Exception {
