@@ -27,6 +27,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -81,6 +82,8 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 throw new ActionException("Error reading file", e);
             }
         }
+        // TODO: download external file
+        // ...
         // list files
         String featureId = params.getHttpParam("featureId");
         JSONArray files = null;
@@ -105,7 +108,11 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     private JSONArray getFilesForFeature(int layerId, String featureId) throws Exception {
-        String files = MAPPER.writeValueAsString(service.getFiles(layerId, featureId));
+        List<WFSAttachment> list = service.getFiles(layerId, featureId);
+        if (list.isEmpty()) {
+            list = service.getExternalFiles(layerId, featureId);
+        }
+        String files = MAPPER.writeValueAsString(list);
         return new JSONArray(files);
     }
 
@@ -126,7 +133,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             List<WFSAttachment> writtenFiles = new ArrayList<>(fileItems.size());
             for (FileItem f : fileItems) {
                 WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream());
-                String[] name = parseFeatureID(f.getName());
+                String[] name = FileService.getBaseAndExtension(f.getName());
                 file.setFeatureId(name[0]);
                 file.setLayerId(layerId);
                 file.setFileExtension(name[1]);
@@ -165,26 +172,22 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 updated(getName());
     }
 
-    private String[] parseFeatureID(String filename) {
-        String[] name = filename.split("\\.");
-        if (name.length > 2) {
-            String ext = name[name.length - 1];
-            String id = filename.substring(0, filename.length() - ext.length() - 1);
-            return new String[] { id, ext };
-        }
-        if (name.length < 2) {
-            return new String[] { name[0], "" };
-        }
-        return name;
-    }
-
     private String getContentType(String extension) {
-        // return "application/json;charset=UTF-8";
         return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
     }
+
     private String getFilename(WFSAttachment file, String lang) {
-        return getLayerName(file.getLayerId(), lang) + "_" + file.getFeatureId() + "_"
-                + file.getId() + "." + file.getFileExtension();
+        final String separator = "_";
+        StringWriter w = new StringWriter();
+        w.write(getLayerName(file.getLayerId(), lang));
+        w.write(separator);
+        w.write(file.getFeatureId());
+        w.write(separator);
+        // TODO: might need urlencoding or maybe check !file.isExternal() -> file.getId()
+        w.write(file.getLocale());
+        w.write(".");
+        w.write(file.getFileExtension());
+        return w.toString();
     }
 
     private String getLayerName(int id, String lang) {
