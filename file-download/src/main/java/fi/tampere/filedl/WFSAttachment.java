@@ -9,6 +9,7 @@ public class WFSAttachment {
     private String featureId;
     private String locale;
     private String fileExtension;
+    private boolean external = false;
 
     @JsonIgnore
     public WFSAttachment getMetadata() {
@@ -17,6 +18,7 @@ public class WFSAttachment {
         attachment.setFeatureId(getFeatureId());
         attachment.setLayerId(getLayerId());
         attachment.setLocale(getLocale());
+        attachment.setExternal(isExternal());
         attachment.setFileExtension(getFileExtension());
         return attachment;
     }
@@ -59,5 +61,13 @@ public class WFSAttachment {
 
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 }
