@@ -61,12 +61,13 @@ public class FileService {
         if (!basePath.isPresent()) {
             throw new ServiceException("Error reading file");
         }
-
-        Path filePath = Paths.get(basePath.toString(), name);
+        // strip out any .. references
+        String fname = Paths.get(name).getFileName().toString();
+        Path filePath = Paths.get(basePath.get().toString(), fname);
         try {
             // TODO: remember to close the inputstream after
             WFSAttachmentFile file = new WFSAttachmentFile(Files.newInputStream(filePath));
-            String[] filename = FileService.getBaseAndExtension(filePath.toFile().getName());
+            String[] filename = FileService.getBaseAndExtension(fname);
             file.setLocale(filename[0]);
             file.setFileExtension(filename[1]);
             file.setLayerId(layerId);

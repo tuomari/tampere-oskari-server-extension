@@ -81,14 +81,21 @@ public class WFSAttachmentsHandler extends RestActionHandler {
             if (featureId == null) {
                 files = getFilesForLayer(layerId);
             } else if (featureId != null) {
-                String externalFile = params.getHttpParam("extID");
+                String externalFile = params.getHttpParam("name");
                 // download external file if param is present
                 if (externalFile != null) {
+                    // try with resource to close inputstream
                     try (WFSAttachmentFile file = service.getExternalFile(layerId, featureId, externalFile)) {
                         writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
                         return;
                     } catch (IOException | ServiceException e) {
-                        throw new ActionException("Error reading file", e);
+                        AuditLog.user(params.getClientIp(), params.getUser()).
+                                withParam("layer", layerId).
+                                withParam("featureId", featureId).
+                                withParam("file", externalFile).
+                            errored(getName());
+                        ResponseHelper.writeError(params, "File not found", HttpServletResponse.SC_NOT_FOUND);
+                        return;
                     }
                 } else {
                     // or list files that are available for layer/feature
@@ -186,7 +193,11 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     private String getContentType(String extension) {
-        return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
+        try {
+            return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
+        } catch(Exception ignored) {
+            return "application/octet-stream";
+        }
     }
 
     private String getFilename(WFSAttachment file, String lang) {
