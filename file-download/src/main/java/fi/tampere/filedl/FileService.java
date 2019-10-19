@@ -177,4 +177,18 @@ public class FileService {
         }
         return path;
     }
+
+    public WFSAttachment removeFile(int layerId, int fileId) throws ServiceException {
+        // WFSAttachment file = findFile(fileId);
+        Path path = Paths.get(fileStorage, Integer.toString(layerId), Integer.toString(fileId));
+        if (!Files.exists(path)) {
+            throw new ServiceException("File not found");
+        }
+        path.toFile().delete();
+        WFSAttachment file = new WFSAttachment();
+        file.setLayerId(layerId);
+        file.setId(fileId);
+        return file;
+    }
+
 }

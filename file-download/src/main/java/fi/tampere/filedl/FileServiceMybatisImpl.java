@@ -82,4 +82,20 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
+    public WFSAttachment removeFile(int layerId, int fileId) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            WFSAttachment metadata = session.getMapper(MAPPER).findFile(fileId);
+            // remove from disk
+            WFSAttachment file = super.removeFile(layerId, fileId);
+            file.setFeatureId(metadata.getFeatureId());
+            file.setLocale(metadata.getLocale());
+            file.setFileExtension(metadata.getFileExtension());
+
+            // remove from db
+            session.getMapper(MAPPER).deleteFile(fileId);
+            session.commit();
+            return file;
+        }
+    }
+
 }

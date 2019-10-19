@@ -74,35 +74,34 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 throw new ActionException("Error reading file", e);
             }
         }
-        // list files
         String featureId = params.getHttpParam("featureId");
+        String externalFile = params.getHttpParam("name");
+
+        // download external file if param is present
+        if (externalFile != null) {
+            // try with resource to close inputstream
+            try (WFSAttachmentFile file = service.getExternalFile(layerId, featureId, externalFile)) {
+                writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
+            } catch (IOException | ServiceException e) {
+                AuditLog.user(params.getClientIp(), params.getUser()).
+                        withParam("layer", layerId).
+                        withParam("featureId", featureId).
+                        withParam("file", externalFile).
+                        errored(getName());
+                ResponseHelper.writeError(params, "File not found", HttpServletResponse.SC_NOT_FOUND);
+            }
+            return;
+        }
+
+        // list files
         JSONArray files = null;
         try {
             if (featureId == null) {
                 files = getFilesForLayer(layerId);
-            } else if (featureId != null) {
-                String externalFile = params.getHttpParam("name");
-                // download external file if param is present
-                if (externalFile != null) {
-                    // try with resource to close inputstream
-                    try (WFSAttachmentFile file = service.getExternalFile(layerId, featureId, externalFile)) {
-                        writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
-                        return;
-                    } catch (IOException | ServiceException e) {
-                        AuditLog.user(params.getClientIp(), params.getUser()).
-                                withParam("layer", layerId).
-                                withParam("featureId", featureId).
-                                withParam("file", externalFile).
-                            errored(getName());
-                        ResponseHelper.writeError(params, "File not found", HttpServletResponse.SC_NOT_FOUND);
-                        return;
-                    }
-                } else {
-                    // or list files that are available for layer/feature
-                    files = getFilesForFeature(layerId, featureId);
-                }
+            } else {
+                // or list files that are available for layer/feature
+                files = getFilesForFeature(layerId, featureId);
             }
-
         } catch (Exception e) {
             LOG.error(e, "Error reading files");
             ResponseHelper.writeResponse(params, new JSONArray());
@@ -139,7 +138,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
-        // TODO: check permissions
+        // TODO: check permissions for non-admin
 
         List<FileItem> fileItems = parseRequest(params.getRequest());
         Map<String, String> parameters = getFormParams(fileItems);
@@ -182,7 +181,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         params.requireAdminUser();
-        // TODO: check permissions
+        // TODO: check permissions for non-admin
         WFSAttachment file = new WFSAttachment();
         file.setId(params.getRequiredParamInt("fileId"));
         file.setLocale(params.getRequiredParam("locale"));
@@ -190,6 +189,25 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         AuditLog.user(params.getClientIp(), params.getUser()).
                 withParam("id", file.getId()).
                 updated(getName());
+    }
+
+    @Override
+    public void handleDelete(ActionParameters params) throws ActionException {
+        params.requireAdminUser();
+        // TODO: check permissions for non-admin
+        try {
+            WFSAttachment file = service.removeFile(
+                    params.getRequiredParamInt(PARAM_LAYER), params.getRequiredParamInt("fileId"));
+            AuditLog.user(params.getClientIp(), params.getUser()).
+                    withParam("id", file.getId()).
+                    withParam("layer", file.getLayerId()).
+                    withParam("featureId", file.getFeatureId()).
+                    withParam("file", file.getLocale()).
+                    deleted(getName());
+            ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK, ResponseHelper.CONTENT_TYPE_JSON_UTF8, MAPPER.writeValueAsString(file));
+        } catch (Exception e) {
+            throw new ActionException("File removal errored", e);
+        }
     }
 
     private String getContentType(String extension) {
