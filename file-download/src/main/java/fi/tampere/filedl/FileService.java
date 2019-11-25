@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class FileService {
 
-    private static final String KEY_ATTACHMENT_PATH = "attachmentPath";
+    protected static final String KEY_ATTACHMENT_PATH = "attachmentPath";
     private final String fileStorage = PropertyUtil.get("file.storage.folder", "/files");
 
     /**

@@ -9,7 +9,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileServiceMybatisImpl extends FileService {
 
@@ -54,9 +57,12 @@ public class FileServiceMybatisImpl extends FileService {
     }
 
     public List<Integer> getLayersWithFiles() {
+        Set<Integer> layerIds = new HashSet<>();
         try (SqlSession session = factory.openSession()) {
-            return session.getMapper(MAPPER).findLayersWithFiles();
+            layerIds.addAll(session.getMapper(MAPPER).findLayersWithFiles());
+            layerIds.addAll(session.getMapper(MAPPER).findLayersWithExternalFilepath());
         }
+        return new ArrayList<>(layerIds);
     }
 
     public List<WFSAttachment> getFiles(int layerId) {

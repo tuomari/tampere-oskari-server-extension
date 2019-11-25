@@ -9,6 +9,9 @@ public interface FileMapper {
         @Select("SELECT distinct layer_id FROM tampere_layer_attachment")
         List<Integer> findLayersWithFiles();
 
+        @Select("SELECT distinct id FROM oskari_maplayer where attributes like '%" + FileService.KEY_ATTACHMENT_PATH + "%'")
+        List<Integer> findLayersWithExternalFilepath();
+
         @Results(id = "FileResult", value = {
                 @Result(property="id", column="id", id=true),
                 @Result(property="featureId", column="feature_id"),
