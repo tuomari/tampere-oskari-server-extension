@@ -14,11 +14,12 @@
     <packaging>jar</packaging>
     <name>Resources for Tampere applications</name>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>resources</directory>
-            </resource>
-        </resources>
-    </build>
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>
