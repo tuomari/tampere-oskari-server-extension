@@ -72,13 +72,6 @@
             </exclusions>
         </dependency>
 
-        <!-- ##### oskari-search-nls needs another release that uses 19.2 geotools ###### -->
-        <!-- dependency>
-            <groupId>fi.nls.oskari.extras</groupId>
-            <artifactId>oskari-search-nls</artifactId>
-            <version>2.1</version>
-        </dependency -->
-        <!-- ##### Otherwise things break when using newer GeoTools on Oskari 1.50.0 ###### -->
 
         <dependency>
           	<groupId>fi.nls.oskari.service</groupId>
@@ -86,6 +79,11 @@
       	</dependency>
         
         <!-- /oskari -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

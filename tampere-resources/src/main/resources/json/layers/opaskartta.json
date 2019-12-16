@@ -1,0 +1,8 @@
+{
+  "__README__": "Assumes this layer can be found in the DB - only url and name are used but the others are required for parsing the JSON",
+  "url": "https://georaster.tampere.fi/geoserver/gwc/service/wmts?",
+  "name": "georaster:opaskartta_EPSG_3067",
+  "type": "",
+  "organization": "",
+  "locale": {}
+}

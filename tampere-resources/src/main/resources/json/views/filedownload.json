@@ -1,0 +1,50 @@
+{
+  "name" : "Latauspalvelu",
+  "type" : "SYSTEM",
+  "default" : true,
+  "public" : true,
+  "onlyUuid" : false,
+  "oskari" : {
+    "application" : "filedl",
+    "page" : "published",
+    "development_prefix" : "/applications"
+  },
+  "selectedLayers" : [
+    "opaskartta.json"
+  ],
+  "bundles" : [
+    {
+      "id" : "mapfull",
+      "config" : {
+        "mapOptions": {"srsName":"EPSG:3067","resolutions":[2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625],"maxExtent":{"top":8388608,"left":-548576,"bottom":6291456,"right":1548576}},
+        "plugins" : [
+          {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"},
+          {"id":"Oskari.mapframework.mapmodule.WmsLayerPlugin"},
+          {"id":"Oskari.mapframework.mapmodule.MarkersPlugin"},
+          {"id":"Oskari.mapframework.mapmodule.ControlsPlugin"},
+          {"id":"Oskari.mapframework.mapmodule.GetInfoPlugin"},
+          {"id":"Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"},
+          {"id":"Oskari.wfsvector.WfsVectorLayerPlugin"},
+          {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"},
+          {"id":"Oskari.mapframework.mapmodule.VectorLayerPlugin"}
+        ]
+      },
+      "state" : {
+        "east": 327304.66825,
+        "north": 6822494.74555,
+        "zoom": 8
+      }
+    },
+    { "id" : "drawtools" },
+    { "id" : "toolbar" },
+    {
+      "id": "infobox",
+      "config": {
+        "adaptable" : true
+      }
+    },
+    { "id" : "maprotator" },
+    { "id" : "file-layerlist" }
+
+  ]
+}
