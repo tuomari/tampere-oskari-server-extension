@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 
 @OskariActionRoute("WFSAttachmentsLayer")
-public class WFSAttachmentsLayerHandler extends RestActionHandler {
+public class  WFSAttachmentsLayerHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(WFSAttachmentsLayerHandler.class);
 

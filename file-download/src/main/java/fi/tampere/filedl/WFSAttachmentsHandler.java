@@ -1,6 +1,7 @@
 package fi.tampere.filedl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -21,6 +22,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -35,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+
 @OskariActionRoute("WFSAttachments")
 public class WFSAttachmentsHandler extends RestActionHandler {
 
@@ -48,6 +52,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final String PARAM_LAYER = "layerId";
+    private static final String PARAM_LAYER_JSON = "json";
 
     private FileService service;
 
@@ -61,7 +66,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         if (layerId == -1) {
             // return list of layer ids with attachments
             List<Integer> layerIds = service.getLayersWithFiles();
-            ResponseHelper.writeResponse(params, new JSONArray(layerIds));
+            ResponseHelper.writeResponse(params, getLayerResponse(layerIds, params));
             return;
         }
         int fileId = params.getHttpParam("fileId", -1);
@@ -108,6 +113,19 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         }
 
         ResponseHelper.writeResponse(params, files);
+    }
+
+    private JSONArray getLayerResponse(List<Integer> layerIds, ActionParameters params) {
+        boolean writeLayersJSON = params.getHttpParam(PARAM_LAYER_JSON, false);
+        if (!writeLayersJSON) {
+            return new JSONArray(layerIds);
+        }
+        // write layer json, CRS doesn't matter as these are all WFS-layers
+        JSONObject layers = OskariLayerWorker.getListOfMapLayersByIdList(
+                layerIds, params.getUser(), params.getLocale().getLanguage(),
+                null);
+
+        return layers.optJSONArray("layers");
     }
 
     private void writeFileResponse(WFSAttachmentFile file, HttpServletResponse response, String language) throws IOException {
