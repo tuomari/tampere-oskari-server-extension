@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <oskari.version>1.54.1</oskari.version>
+        <oskari.version>1.55.0-SNAPSHOT</oskari.version>
         <java.version>1.8</java.version>
     </properties>
 
