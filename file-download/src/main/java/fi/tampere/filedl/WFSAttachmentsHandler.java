@@ -178,8 +178,10 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                 if (locale == null) {
                     locale = name[0];
                 }
+                LOG.info("Writing", f.getName(), f.isInMemory(), f.getSize());
                 file.setLocale(locale);
                 writtenFiles.add(service.insertFile(file));
+                LOG.info("Wrote", f.getName());
             }
 
             AuditLog.user(params.getClientIp(), params.getUser()).

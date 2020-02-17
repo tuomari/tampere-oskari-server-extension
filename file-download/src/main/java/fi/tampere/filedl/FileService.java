@@ -1,6 +1,8 @@
 package fi.tampere.filedl;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class FileService {
 
     protected static final String KEY_ATTACHMENT_PATH = "attachmentPath";
+
+    private static final Logger LOG = LogFactory.getLogger(FileService.class);
     private final String fileStorage = PropertyUtil.get("file.storage.folder", "/files");
 
     /**
@@ -150,12 +154,16 @@ public class FileService {
 
 
     public WFSAttachment insertFile(WFSAttachmentFile file) throws ServiceException {
+
         Path path = ensurePath(Integer.toString(file.getLayerId()));
         try {
             // save file
             String filename = Integer.toString(file.getId());
+            LOG.info("File path for", filename);
             Path mpath = Paths.get(path.toString(), filename);
+            LOG.info("Copy contents");
             Files.copy(file.getFile(), mpath);
+            LOG.info("Copied contents");
             return file.getMetadata();
         } catch (IOException e) {
             throw new ServiceException("Unable to save files", e);
@@ -167,13 +175,18 @@ public class FileService {
     }
 
     private Path ensurePath(String layer) throws ServiceException {
+        LOG.info("Checking path for", fileStorage, layer);
         Path path = Paths.get(fileStorage, layer);
         if (!Files.exists(path)) {
+            LOG.info("Creating path");
             try {
                 Files.createDirectory(path);
+                LOG.info("Created path");
             } catch (Exception e) {
                 throw new ServiceException("Unable to create folder for " + layer, e);
             }
+        } else {
+            LOG.info("Path existed");
         }
         return path;
     }
