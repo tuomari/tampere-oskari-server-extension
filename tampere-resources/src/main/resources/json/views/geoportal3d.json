@@ -91,7 +91,7 @@
     },
     { "id" : "statehandler" },
     { "id" : "search" },
-    { "id" : "layerlist" },
+    { "id" : "hierarchical-layerlist" },
     {
       "id" : "coordinatetool",
       "config" : {"roundToDecimals":6}
