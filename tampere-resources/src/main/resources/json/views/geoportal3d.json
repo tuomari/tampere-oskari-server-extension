@@ -10,7 +10,7 @@
     "development_prefix" : "/applications"
   },
   "selectedLayers" : [
-    "--nasa-blue-marble.json"
+    "opaskartta.json"
   ],
   "bundles" : [
     {
