@@ -1,0 +1,32 @@
+{
+  "type":"tiles3dlayer",
+  "url":"https://kartat.tampere.fi/cesium_web/tilesets/RAKENNUKSEN_OSAT/tileset.json",
+  "name":"tre_buildings_3d",
+  "organization": "Tampereen kaupunki",
+  "inspiretheme": "Rakennukset",
+  "srs_name": "EPSG:3857",
+  "locale": {
+    "fi": {
+      "name": "3D-rakennukset"
+    },
+    "sv": {
+      "name": "3D byggnader"
+    },
+    "en": {
+      "name": "3D buildings"
+    }
+  },
+  "options": {
+    "styles": {
+      "buildings": {
+        "fill": {
+          "color": "#FFFFFF"
+        }
+      }
+    }
+  },
+  "role_permissions": {
+    "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+    "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"]
+  }
+}
