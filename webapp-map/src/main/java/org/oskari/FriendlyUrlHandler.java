@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FriendlyUrlHandler {
 
     private String filedlUUID = null;
+    private String threedUUID = null;
 
     @RequestMapping("/filedl")
-    public String redirectToExample(Model model,
+    public String redirectToFileDL(Model model,
                                     @OskariParam ActionParameters params) throws Exception {
-        return redirectToExample(PropertyUtil.getDefaultLanguage(), model, params);
+        return redirectToFileDL(PropertyUtil.getDefaultLanguage(), model, params);
     }
 
     @RequestMapping("/filedl/{lang}")
-    public String redirectToExample(@PathVariable("lang") String lang,
+    public String redirectToFileDL(@PathVariable("lang") String lang,
                                     Model model,
                                     @OskariParam ActionParameters params) throws Exception {
         if(!isSupported(lang)) {
@@ -30,6 +31,24 @@ public class FriendlyUrlHandler {
         }
 
         String url = "/?lang=" + lang + "&uuid=" + getFileDL();
+        return "redirect:" + attachQuery(url, params.getRequest().getQueryString());
+    }
+
+    @RequestMapping("/3d")
+    public String redirectTo3D(Model model,
+                                    @OskariParam ActionParameters params) throws Exception {
+        return redirectTo3D(PropertyUtil.getDefaultLanguage(), model, params);
+    }
+
+    @RequestMapping("/3d/{lang}")
+    public String redirectTo3D(@PathVariable("lang") String lang,
+                                    Model model,
+                                    @OskariParam ActionParameters params) throws Exception {
+        if(!isSupported(lang)) {
+            lang = PropertyUtil.getDefaultLanguage();
+        }
+
+        String url = "/?lang=" + lang + "&uuid=" + get3DGeoportal();
         return "redirect:" + attachQuery(url, params.getRequest().getQueryString());
     }
 
@@ -68,5 +87,16 @@ public class FriendlyUrlHandler {
                 .getViewWithConf("Latauspalvelu")
                 .getUuid();
         return filedlUUID;
+    }
+
+    private String get3DGeoportal() {
+        if (threedUUID != null) {
+            return threedUUID;
+        }
+        threedUUID = OskariComponentManager
+                .getComponentOfType(ViewService.class)
+                .getViewWithConf("Tampere 3D")
+                .getUuid();
+        return threedUUID;
     }
 }
