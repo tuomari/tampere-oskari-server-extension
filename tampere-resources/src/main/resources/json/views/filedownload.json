@@ -6,7 +6,7 @@
   "onlyUuid" : false,
   "oskari" : {
     "application" : "filedl",
-    "page" : "published",
+    "page" : "filedl",
     "development_prefix" : "/applications"
   },
   "selectedLayers" : [

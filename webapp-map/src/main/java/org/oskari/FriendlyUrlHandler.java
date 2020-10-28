@@ -16,6 +16,12 @@ public class FriendlyUrlHandler {
     private String filedlUUID = null;
     private String threedUUID = null;
 
+    @RequestMapping("/lataus")
+    public String redirectlatausToFileDL(Model model,
+                                   @OskariParam ActionParameters params) throws Exception {
+        return redirectToFileDL(PropertyUtil.getDefaultLanguage(), model, params);
+    }
+
     @RequestMapping("/filedl")
     public String redirectToFileDL(Model model,
                                     @OskariParam ActionParameters params) throws Exception {
