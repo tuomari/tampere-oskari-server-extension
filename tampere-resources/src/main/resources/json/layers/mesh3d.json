@@ -1,0 +1,33 @@
+{
+  "type":"tiles3dlayer",
+  "url":"https://kartat.tampere.fi/cesium_web/tilesets/Tampere_2018_Blom/Tampere_Cesium_2018.json",
+  "name":"tre_mesh_3d",
+  "organization": "Tampereen kaupunki",
+  "inspiretheme": "Rakennukset",
+  "srs_name": "EPSG:3857",
+  "locale": {
+    "fi": {
+      "name": "3D-mesh"
+    },
+    "sv": {
+      "name": "3D mesh"
+    },
+    "en": {
+      "name": "3D mesh"
+    }
+  },
+  "options": {
+    "maximumScreenSpaceError": 0,
+    "styles": {
+      "buildings": {
+        "fill": {
+          "color": "#FFFFFF"
+        }
+      }
+    }
+  },
+  "role_permissions": {
+    "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+    "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"]
+  }
+}
