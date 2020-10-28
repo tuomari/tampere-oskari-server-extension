@@ -10,7 +10,7 @@
     "development_prefix" : "/applications"
   },
   "selectedLayers" : [
-    "opaskartta.json"
+    "mesh3d.json"
   ],
   "bundles" : [
     {
@@ -66,16 +66,18 @@
         ]
       },
       "state" : {
+        "north": 8741488.460196232,
+        "east": 2645407.429070236,
         "camera": {
           "location": {
-            "x": 0,
-            "y": 4000000,
-            "altitude": 14310535.857098067
+            "altitude": 176,
+            "x": 2644860,
+            "y": 8740741
           },
           "orientation": {
-            "heading": 0.0,
-            "pitch": -90,
-            "roll": 0.0
+            "heading": 35.97,
+            "roll": 0.10,
+            "pitch": -22.04
           }
         }
       }
