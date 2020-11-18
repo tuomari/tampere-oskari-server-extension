@@ -1,1 +1,0 @@
-UPDATE portti_view SET page='filedl' WHERE application='filedl';

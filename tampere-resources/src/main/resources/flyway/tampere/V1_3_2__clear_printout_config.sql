@@ -1,1 +1,0 @@
-UPDATE 	portti_view_bundle_seq SET config='{}' where bundle_id = (select id from portti_bundle where name ='printout');

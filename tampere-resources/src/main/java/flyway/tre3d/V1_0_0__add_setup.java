@@ -1,15 +1,15 @@
 package flyway.tre3d;
 
-import fi.nls.oskari.db.LayerHelper;
-import fi.nls.oskari.db.ViewHelper;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
+import org.oskari.helpers.AppSetupHelper;
+import org.oskari.helpers.LayerHelper;
 
-import java.sql.Connection;
+public class V1_0_0__add_setup extends BaseJavaMigration {
 
-public class V1_0_0__add_setup implements JdbcMigration {
-    public void migrate(Connection connection) throws Exception {
+    public void migrate(Context context) throws Exception {
         LayerHelper.setupLayer("buildings3d.json");
         LayerHelper.setupLayer("mesh3d.json");
-        ViewHelper.insertView(connection, "geoportal3d.json");
+        AppSetupHelper.create(context.getConnection(), "geoportal3d.json");
     }
 }
