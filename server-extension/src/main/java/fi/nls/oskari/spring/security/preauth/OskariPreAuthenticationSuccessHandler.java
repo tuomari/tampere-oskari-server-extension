@@ -6,6 +6,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.util.JSONHelper;
+import fi.tampere.sourcematerial.SourceMaterial;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -71,7 +75,13 @@ public class OskariPreAuthenticationSuccessHandler extends SimpleUrlAuthenticati
             user.setFirstname(oud.getUser().getFirstname());
             user.setLastname(oud.getUser().getLastname());
             user.setScreenname(oud.getUser().getScreenname());
-            user.setRoles(oud.getUser().getRoles());
+            // Keep previous roles that start with the source material roles prefix.
+            Set<Role> roles = user.getRoles().stream()
+                    .filter(r -> r.getName().startsWith(SourceMaterial.ROLE_PREFIX))
+                    .collect(Collectors.toSet());
+            // add the roles we get from auth
+            roles.addAll(oud.getUser().getRoles());
+            user.setRoles(roles);
             // merge attributes
             JSONHelper.merge(user.getAttributesJSON(), oud.getUser().getAttributesJSON());
         }
