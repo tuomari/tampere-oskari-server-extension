@@ -1,12 +1,12 @@
 {
-  "name" : "Latauspalvelu",
+  "name" : "Lähtöaineisto",
   "type" : "SYSTEM",
   "default" : true,
   "public" : true,
   "onlyUuid" : false,
   "oskari" : {
-    "application" : "filedl",
-    "page" : "filedl"
+    "application" : "sourcematerial",
+    "page" : "sourcematerial"
   },
   "selectedLayers" : [
     "opaskartta.json"
@@ -41,9 +41,7 @@
       "config": {
         "adaptable" : true
       }
-    },
-    { "id" : "maprotator" },
-    { "id" : "file-layerlist" }
+    }
 
   ]
 }

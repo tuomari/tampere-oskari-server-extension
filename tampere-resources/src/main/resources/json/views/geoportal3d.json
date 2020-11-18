@@ -6,8 +6,7 @@
   "onlyUuid" : true,
   "oskari" : {
     "application" : "geoportal-3d",
-    "page" : "index",
-    "development_prefix" : "/applications"
+    "page" : "index"
   },
   "selectedLayers" : [
     "mesh3d.json"
