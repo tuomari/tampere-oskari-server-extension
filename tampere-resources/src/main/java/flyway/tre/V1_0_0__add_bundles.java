@@ -19,7 +19,7 @@ public class V1_0_0__add_bundles extends BaseJavaMigration {
 
         // add applications based on json under /src/main/resources/json/views/
         // filedownload is assumed on existing db:
-        
+
         //AppSetupHelper.create(context.getConnection(), "/json/view/filedownload.json");
         AppSetupHelper.create(context.getConnection(), "/json/views/sourcematerial.json");
     }

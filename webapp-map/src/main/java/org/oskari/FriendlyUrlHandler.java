@@ -15,6 +15,7 @@ public class FriendlyUrlHandler {
 
     private String filedlUUID = null;
     private String threedUUID = null;
+    private String sourcematerialUUID = null;
 
     @RequestMapping("/lataus")
     public String redirectlatausToFileDL(Model model,
@@ -58,6 +59,24 @@ public class FriendlyUrlHandler {
         return "redirect:" + attachQuery(url, params.getRequest().getQueryString());
     }
 
+    @RequestMapping("/lahto")
+    public String redirectToSourceMaterial(Model model,
+                               @OskariParam ActionParameters params) throws Exception {
+        return redirectToSourceMaterial(PropertyUtil.getDefaultLanguage(), model, params);
+    }
+
+    @RequestMapping("/lahto/{lang}")
+    public String redirectToSourceMaterial(@PathVariable("lang") String lang,
+                               Model model,
+                               @OskariParam ActionParameters params) throws Exception {
+        if(!isSupported(lang)) {
+            lang = PropertyUtil.getDefaultLanguage();
+        }
+
+        String url = "/?lang=" + lang + "&uuid=" + getSourceMaterial();
+        return "redirect:" + attachQuery(url, params.getRequest().getQueryString());
+    }
+
     private boolean isSupported(String lang) {
         if (lang == null || lang.isEmpty()) {
             return false;
@@ -82,6 +101,17 @@ public class FriendlyUrlHandler {
         }
         return path + "&" + query;
 
+    }
+
+    private String getSourceMaterial() {
+        if (sourcematerialUUID != null) {
+            return sourcematerialUUID;
+        }
+        sourcematerialUUID = OskariComponentManager
+                .getComponentOfType(ViewService.class)
+                .getViewWithConf("Lähtöaineisto")
+                .getUuid();
+        return sourcematerialUUID;
     }
 
     private String getFileDL() {
