@@ -1,0 +1,2 @@
+INSERT INTO oskari_roles(name) VALUES ('LAHTO_KAAVAHARKINTA');
+INSERT INTO oskari_roles(name) VALUES ('LAHTO_SELVITYKSET');
