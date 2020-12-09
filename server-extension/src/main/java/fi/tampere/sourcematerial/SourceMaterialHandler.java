@@ -17,6 +17,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
@@ -42,10 +43,10 @@ public class SourceMaterialHandler extends RestActionHandler {
 
         OskariLayerService service = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         for (Role role : getValidRoles(params.getUser())) {
-            List<Integer> layerIds = getMapLayers(resources, role.getName());
+            Set<Integer> layerIds = getMapLayers(resources, role);
             // 3) find layers that have permissions for each LAHTO_-prefixed role
             JSONObject layers = OskariLayerWorker.getListOfMapLayers(
-                    service.findByIdList(layerIds),
+                    service.findByIdList(new ArrayList<>(layerIds)),
                     params.getUser(),
                     params.getLocale().getLanguage(),
                     "EPSG:3067",
@@ -68,16 +69,14 @@ public class SourceMaterialHandler extends RestActionHandler {
         PermissionService service = OskariComponentManager.getComponentOfType(PermissionService.class);
         return service.findResourcesByType(ResourceType.maplayer);
     }
-    private List<Integer> getMapLayers(List<Resource> resources, String role) {
-        // find layers that has a permission type named after a LAHTO_-prefixed role
-        // So there needs to be a role like LAHTO_SUUNNITTELU
-        // and a layer with LAHTO_SUUNNITTELU as permission type for _any_ role
+    private Set<Integer> getMapLayers(List<Resource> resources, Role role) {
+        // find layers that have VIEW_LAYER permission for a LAHTO_-prefixed role
         return resources.stream()
-                .filter(r -> r.getPermissionTypes().contains(role))
+                .filter(r -> r.hasPermission(role, PermissionType.VIEW_LAYER))
                 .map(r -> r.getMapping())
                 .map(id -> ConversionHelper.getInt(id, -1))
                 .filter(id -> id != -1)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
 }
