@@ -54,6 +54,16 @@ public class SourceMaterialHandler extends RestActionHandler {
                     true);
             JSONHelper.putValue(response, role.getName(), layers.optJSONArray("layers"));
         }
+        // layers for the background layer selection
+        JSONObject layers = OskariLayerWorker.getListOfMapLayers(
+                service.findByIdList(new ArrayList(SourceMaterial.getBaseLayerIds())),
+                params.getUser(),
+                params.getLocale().getLanguage(),
+                "EPSG:3067",
+                true,
+                true);
+        JSONHelper.putValue(response, "__layers", layers.optJSONArray("layers"));
+
         // 4) respond with object having role names as keys and layer json arrays as values
         ResponseHelper.writeResponse(params, response);
     }

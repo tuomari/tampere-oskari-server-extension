@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>fi.tampere.oskari</groupId>
+            <artifactId>server-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>control-base</artifactId>
             <scope>provided</scope>
