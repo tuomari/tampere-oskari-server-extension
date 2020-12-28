@@ -13,6 +13,10 @@ import fi.nls.oskari.util.IOHelper;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Drop-in replacement for GetWFSFeaturesHandler but also tries to get features
+ * for layers that are registered as WMS on Oskari.
+ */
 @OskariActionRoute("SourceMaterialFeatures")
 public class SourceMaterialFeaturesHandler extends GetWFSFeaturesHandler {
 
@@ -33,34 +37,43 @@ public class SourceMaterialFeaturesHandler extends GetWFSFeaturesHandler {
         if (!OskariLayer.TYPE_WMS.equals(layer.getType())) {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
         }
-        // TODO: create WFSLayer from WMS
+        // create WFSLayer from WMS
         OskariLayer mock = new OskariLayer();
-        String url = layer.getUrl().trim();
-        // crude approach to change wms -> wfs
-        if (url.endsWith("?")) {
-            url = url.substring(0, url.length() -1);
-        }
-        if (url.endsWith("/wms")) {
-            // TODO: replace with call to DescribeLayer to get the url
-            // -> cache url parsed from response with key == layerId, value = url from Describe
-            mock.setUrl(url.substring(0, url.length() - 5) + "/wfs?");
-        } else if (url.endsWith("/ows")) {
-            // TODO: replace with call to DescribeLayer to get the url
-            // -> cache url parsed from response with key == layerId, value = url from Describe
-            mock.setUrl(url.substring(0, url.length() - 5) + "/wfs?");
-        } else {
-            throw new ActionParamsException("Not implemented yet: " + url);
-        }
+        mock.setUrl(getWFSUrlFromWMS(layer.getUrl()));
         mock.setType(OskariLayer.TYPE_WFS);
         mock.setName(layer.getName());
+        mock.setUsername(layer.getUsername());
+        mock.setPassword(layer.getPassword());
         mock.setVersion("1.1.0");
         LOG.debug("Original layer", layer.getUrl(), layer.getName());
         LOG.debug("WFS mock", mock.getUrl(), mock.getName());
         //LOG.debug("WFS mock", mock);
         return mock;
-        // TODO: remove this once the commented out code is ready to map wms -> wfs
-        //  only used to mimic current impl for drop-in replacement
-        //throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
+    }
+
+    private String getWFSUrlFromWMS(String wmsURL) throws ActionParamsException {
+        String url = wmsURL.trim();
+        // crude approach to change wms -> wfs
+        // TODO: replace with call to DescribeLayer to get the url
+        // -> cache url parsed from response with key == layerId, value = url from Describe
+        String replacement = "/wfs?";
+        if (url.endsWith("?")) {
+            url = url.substring(0, url.length() -1);
+        }
+        if (url.endsWith("/wms")) {
+            return url.substring(0, url.length() - 5) + replacement;
+        } else if (url.endsWith("/ows")) {
+            return url.substring(0, url.length() - 5) + replacement;
+        }
+        // handle cases when there's additional params
+        if (url.indexOf("/wms?") != -1) {
+            return url.replace("/wms?", replacement);
+        }
+        if (url.indexOf("/ows?") != -1) {
+            return url.replace("/ows?", replacement);
+        }
+        // TODO: uppercase alternatives?
+        throw new ActionParamsException("Not implemented yet: " + url);
     }
 
     private String getDescribeLayerUrl(OskariLayer layer) {
