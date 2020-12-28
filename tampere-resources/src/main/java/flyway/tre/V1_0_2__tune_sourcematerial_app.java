@@ -11,9 +11,7 @@ import org.oskari.helpers.AppSetupHelper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class V1_0_2__tune_sourcematerial_app extends BaseJavaMigration {
     public void migrate(Context context) throws Exception {
@@ -71,6 +69,8 @@ public class V1_0_2__tune_sourcematerial_app extends BaseJavaMigration {
      */
     private void changeDefaultLayer(Bundle mapfull) throws Exception {
         JSONArray layers = mapfull.getStateJSON().optJSONArray("selectedLayers");
+        // https://georaster.tampere.fi/geoserver/gwc/service/wmts?
+        // georaster:virastokartta_vari_EPSG_3067
         layers.getJSONObject(0).put("id", 18);
     }
 }
