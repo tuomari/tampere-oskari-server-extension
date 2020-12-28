@@ -50,6 +50,7 @@ public class V1_0_2__tune_sourcematerial_app extends BaseJavaMigration {
         JSONArray layerIds = new JSONArray(SourceMaterial.getBaseLayerIds());
         config.put("baseLayers", layerIds);
         plugin.put("config", config);
+        config.put("showAsDropdown", false);
         plugins.put(plugin);
     }
 

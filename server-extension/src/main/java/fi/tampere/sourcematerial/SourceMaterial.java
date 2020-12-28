@@ -20,12 +20,12 @@ public class SourceMaterial {
     - georaster:kantakartta_EPSG_3067
     - georaster:virastokartta_vari_EPSG_3067
      */
-    public static Set<Long> getBaseLayerIds() {
-        Set<Long> ids = new HashSet<>(4);
-        ids.add(1918L);
-        ids.add(2266L);
-        ids.add(6L);
-        ids.add(18L);
+    public static Set<Integer> getBaseLayerIds() {
+        Set<Integer> ids = new HashSet<>(4);
+        ids.add(1918);
+        ids.add(2266);
+        ids.add(6);
+        ids.add(18);
         return ids;
     }
 }
