@@ -42,12 +42,13 @@ public class SourceMaterialFeaturesHandler extends GetWFSFeaturesHandler {
         mock.setUrl(getWFSUrlFromWMS(layer.getUrl()));
         mock.setType(OskariLayer.TYPE_WFS);
         mock.setName(layer.getName());
+        // Credentials copying seem to be problematic.
+        // There are WMS layers with credentials that when sent to the wfs don't work correctly
         mock.setUsername(layer.getUsername());
         mock.setPassword(layer.getPassword());
         mock.setVersion("1.1.0");
         LOG.debug("Original layer", layer.getUrl(), layer.getName());
         LOG.debug("WFS mock", mock.getUrl(), mock.getName());
-        //LOG.debug("WFS mock", mock);
         return mock;
     }
 
@@ -61,9 +62,9 @@ public class SourceMaterialFeaturesHandler extends GetWFSFeaturesHandler {
             url = url.substring(0, url.length() -1);
         }
         if (url.endsWith("/wms")) {
-            return url.substring(0, url.length() - 5) + replacement;
+            return url.substring(0, url.length() - 4) + replacement;
         } else if (url.endsWith("/ows")) {
-            return url.substring(0, url.length() - 5) + replacement;
+            return url.substring(0, url.length() - 4) + replacement;
         }
         // handle cases when there's additional params
         if (url.indexOf("/wms?") != -1) {
