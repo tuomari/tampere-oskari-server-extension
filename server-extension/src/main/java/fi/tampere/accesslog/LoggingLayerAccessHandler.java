@@ -1,14 +1,20 @@
 package fi.tampere.accesslog;
 
+import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.json.JSONObject;
 import org.oskari.service.user.LayerAccessHandler;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 
+
+@Oskari
 public class LoggingLayerAccessHandler extends LayerAccessHandler {
 
     public static final String ATTRIBUTE_SENSITIVE = "sensitive";
+    private static final Logger LOG = LogFactory.getLogger("ACCESS");
 
     @Override
     public void handle(OskariLayer layer, User user) {
@@ -29,7 +35,6 @@ public class LoggingLayerAccessHandler extends LayerAccessHandler {
     }
 
     private void audit(String layerName, String layerUrl, long userId, String userScreenName) {
-        // TODO: Do something? Write CSV or something?
+        LOG.warn(userId, userScreenName, layerName, layerUrl);
     }
-
 }
