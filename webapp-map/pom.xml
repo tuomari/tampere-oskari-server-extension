@@ -89,6 +89,14 @@
         
         <!-- /oskari -->
 
+        <!-- oskari-extensions -->
+        <dependency>
+            <groupId>fi.nls.oskari.extras</groupId>
+            <artifactId>service-terrain-profile</artifactId>
+            <version>${terrain.profile.version}</version>
+        </dependency>
+        <!-- /oskari-extensions -->
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
