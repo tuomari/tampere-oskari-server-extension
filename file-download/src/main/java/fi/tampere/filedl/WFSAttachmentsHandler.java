@@ -29,6 +29,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -37,17 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
-
 @OskariActionRoute("WFSAttachments")
 public class WFSAttachmentsHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(WFSAttachmentsHandler.class);
 
-    private static final int KB = 1024 * 1024;
-    private static final int MB = 1024 * KB;
-    // Store files smaller than 128kb in memory instead of writing them to disk
-    private static final int MAX_SIZE_MEMORY = 128 * KB;
+    private static final int MB = 1024 * 1024;
+    // Store files smaller than 16mb in memory instead of writing them to disk
+    private static final int MAX_SIZE_MEMORY = 16 * MB;
     private static final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -132,11 +130,9 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         response.setContentType(getContentType(file.getFileExtension()));
         // attachment header
         response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, language) + "\"");
-        IOHelper.copy(
-                file.getFile(),
-                response.getOutputStream());
-        response.getOutputStream().flush();
-        response.getOutputStream().close();
+        try (OutputStream out = response.getOutputStream()) {
+            IOHelper.copy(file.getFile(), out);
+        }
     }
 
     private JSONArray getFilesForLayer(int layerId) throws Exception {
@@ -169,19 +165,21 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         try {
             List<WFSAttachment> writtenFiles = new ArrayList<>(fileItems.size());
             for (FileItem f : fileItems) {
-                WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream());
-                String[] name = FileService.getBaseAndExtension(f.getName());
-                file.setFeatureId(name[0]);
-                file.setLayerId(layerId);
-                file.setFileExtension(name[1]);
-                String locale = parameters.get("locale_" + f.getName());
-                if (locale == null) {
-                    locale = name[0];
+                try (WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream())) {
+                    String[] name = FileService.getBaseAndExtension(f.getName());
+                    file.setFeatureId(name[0]);
+                    file.setLayerId(layerId);
+                    file.setFileExtension(name[1]);
+                    String locale = parameters.get("locale_" + f.getName());
+                    if (locale == null) {
+                        locale = name[0];
+                    }
+                    LOG.info("Writing", f.getName(), f.isInMemory(), f.getSize());
+                    file.setLocale(locale);
+                    writtenFiles.add(service.insertFile(file));
+                    LOG.info("Wrote", f.getName());
                 }
-                LOG.info("Writing", f.getName(), f.isInMemory(), f.getSize());
-                file.setLocale(locale);
-                writtenFiles.add(service.insertFile(file));
-                LOG.info("Wrote", f.getName());
+                f.delete();
             }
 
             AuditLog.user(params.getClientIp(), params.getUser()).

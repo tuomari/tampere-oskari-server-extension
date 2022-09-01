@@ -16,11 +16,6 @@ public class WFSAttachmentFile extends WFSAttachment implements Closeable {
         return file;
     }
 
-    public void setFile(InputStream in) {
-        file = in;
-    }
-
-
     @Override
     public void close() throws IOException {
         if (file != null) {

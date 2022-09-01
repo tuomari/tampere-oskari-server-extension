@@ -6,19 +6,19 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class FileService {
+public abstract class FileService {
 
     protected static final String KEY_ATTACHMENT_PATH = "attachmentPath";
 
@@ -43,8 +43,13 @@ public class FileService {
         return name;
     }
 
-    public WFSAttachmentFile getFile(int layerId, int fileId) throws ServiceException {
+    public abstract WFSAttachmentFile getFile(int layerId, int fileId) throws ServiceException;
 
+    public abstract List<Integer> getLayersWithFiles();
+
+    public abstract List<WFSAttachment> getFiles(int layerId);
+
+    protected WFSAttachmentFile getFileFromDisk(int layerId, int fileId) throws ServiceException {
         Path path = Paths.get(fileStorage, Integer.toString(layerId), Integer.toString(fileId));
         if (!Files.exists(path)) {
             throw new ServiceException("File not found");
@@ -83,27 +88,6 @@ public class FileService {
         }
     }
 
-    public List<Integer> getLayersWithFiles() {
-        throw new ServiceRuntimeException("Not implemented");
-    }
-
-    public List<WFSAttachment> getFiles(int layerId) {
-
-        Path path = Paths.get(fileStorage, Integer.toString(layerId));
-        if (!Files.exists(path)) {
-            return Collections.EMPTY_LIST;
-        }
-        try {
-            return Files.list(path)
-                    .map(p -> p.toFile())
-                    .filter(f -> f.canRead() && !f.isDirectory())
-                    .map(f -> new WFSAttachment())
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new ServiceRuntimeException("Unable to read files", e);
-        }
-    }
-
     private Optional<Path> getPathForExternalFiles(int layerId, String featureId) {
         OskariLayer layer = OskariComponentManager.getComponentOfType(OskariLayerService.class).find(layerId);
         if(layer == null) {
@@ -126,34 +110,30 @@ public class FileService {
         if (!path.isPresent()) {
             return Collections.EMPTY_LIST;
         }
-        try {
-            return Files.list(path.get())
-                    .map(p -> p.toFile())
-                    .filter(f -> f.canRead() && !f.isDirectory())
-                    .map(f -> {
-                        WFSAttachment file = new WFSAttachment();
-                        String[] name = FileService.getBaseAndExtension(f.getName());
-                        file.setLocale(name[0]);
-                        file.setFileExtension(name[1]);
-                        file.setFeatureId(featureId);
-                        file.setLayerId(layerId);
-                        file.setExternal(true);
-                        return file;
-                    })
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new ServiceRuntimeException("Unable to read files", e);
+        File dir = path.get().toFile();
+        List<WFSAttachment> attachments = new ArrayList<>();
+        for (File f : dir.listFiles(f -> f.canRead() && !f.isDirectory())) {
+            attachments.add(toWFSAttachment(f, layerId, featureId));
         }
+        return attachments;
     }
 
-    public List<WFSAttachment> getFiles(int layerId, String featureId) {
-        return getFiles(layerId).stream()
-                .filter(f -> f.getFeatureId().equalsIgnoreCase(featureId))
-                .collect(Collectors.toList());
+    private WFSAttachment toWFSAttachment(File f, int layerId, String featureId) {
+        WFSAttachment file = new WFSAttachment();
+        String[] name = FileService.getBaseAndExtension(f.getName());
+        file.setLocale(name[0]);
+        file.setFileExtension(name[1]);
+        file.setFeatureId(featureId);
+        file.setLayerId(layerId);
+        file.setExternal(true);
+        return file;
     }
 
+    public abstract List<WFSAttachment> getFiles(int layerId, String featureId);
 
-    public WFSAttachment insertFile(WFSAttachmentFile file) throws ServiceException {
+    public abstract WFSAttachment insertFile(WFSAttachmentFile file) throws ServiceException;
+
+    public WFSAttachment insertFileToDisk(WFSAttachmentFile file) throws ServiceException {
 
         Path path = ensurePath(Integer.toString(file.getLayerId()));
         try {
@@ -170,9 +150,7 @@ public class FileService {
         }
     }
 
-    public void updateMetadata(WFSAttachment file) {
-        throw new ServiceRuntimeException("Not implemented");
-    }
+    public abstract void updateMetadata(WFSAttachment file);
 
     private Path ensurePath(String layer) throws ServiceException {
         LOG.info("Checking path for", fileStorage, layer);
@@ -191,7 +169,9 @@ public class FileService {
         return path;
     }
 
-    public WFSAttachment removeFile(int layerId, int fileId) throws ServiceException {
+    public abstract WFSAttachment removeFile(int layerId, int fileId) throws ServiceException;
+
+    public WFSAttachment removeFileFromDisk(int layerId, int fileId) throws ServiceException {
         // WFSAttachment file = findFile(fileId);
         Path path = Paths.get(fileStorage, Integer.toString(layerId), Integer.toString(fileId));
         if (!Files.exists(path)) {
