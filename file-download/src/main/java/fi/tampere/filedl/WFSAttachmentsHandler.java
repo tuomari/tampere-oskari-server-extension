@@ -25,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -130,6 +129,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         response.setContentType(getContentType(file.getFileExtension()));
         // attachment header
         response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, language) + "\"");
+        response.setContentLengthLong(file.getSize());
         try (OutputStream out = response.getOutputStream()) {
             IOHelper.copy(file.getFile(), out);
         }
@@ -165,7 +165,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         try {
             List<WFSAttachment> writtenFiles = new ArrayList<>(fileItems.size());
             for (FileItem f : fileItems) {
-                try (WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream())) {
+                try (WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream(), f.getSize())) {
                     String[] name = FileService.getBaseAndExtension(f.getName());
                     file.setFeatureId(name[0]);
                     file.setLayerId(layerId);
@@ -229,9 +229,13 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     private String getContentType(String extension) {
-        try {
-            return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
-        } catch(Exception ignored) {
+        switch (extension) {
+        case "gpkg":
+            return "application/geopackage+sqlite3";
+        case "tif":
+            return "image/tiff";
+        case "las":
+        default:
             return "application/octet-stream";
         }
     }

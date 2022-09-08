@@ -10,6 +10,7 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,13 +55,22 @@ public abstract class FileService {
         if (!Files.exists(path)) {
             throw new ServiceException("File not found");
         }
+        InputStream in = null;
         try {
-            // TODO: remember to close the inputstream after
-            WFSAttachmentFile file = new WFSAttachmentFile(Files.newInputStream(path));
+            in = Files.newInputStream(path);
+            long size = Files.size(path);
+            WFSAttachmentFile file = new WFSAttachmentFile(in, size);
             file.setLayerId(layerId);
             file.setId(fileId);
             return file;
         } catch (IOException e) {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ignore) {
+                    // Ignore me
+                }
+            }
             throw new ServiceException("Error reading file", e);
         }
     }
@@ -73,9 +83,11 @@ public abstract class FileService {
         // strip out any .. references
         String fname = Paths.get(name).getFileName().toString();
         Path filePath = Paths.get(basePath.get().toString(), fname);
+        InputStream in = null;
         try {
-            // TODO: remember to close the inputstream after
-            WFSAttachmentFile file = new WFSAttachmentFile(Files.newInputStream(filePath));
+            in = Files.newInputStream(filePath);
+            long size = Files.size(filePath);
+            WFSAttachmentFile file = new WFSAttachmentFile(in, size);
             String[] filename = FileService.getBaseAndExtension(fname);
             file.setLocale(filename[0]);
             file.setFileExtension(filename[1]);
@@ -84,6 +96,13 @@ public abstract class FileService {
             file.setExternal(true);
             return file;
         } catch (IOException e) {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ignore) {
+                    // Ignore me
+                }
+            }
             throw new ServiceException("Error reading file", e);
         }
     }
