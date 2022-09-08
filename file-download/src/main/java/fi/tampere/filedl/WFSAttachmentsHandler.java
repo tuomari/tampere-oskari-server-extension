@@ -129,6 +129,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         response.setContentType(getContentType(file.getFileExtension()));
         // attachment header
         response.addHeader("Content-Disposition", "attachment; filename=\"" + getFilename(file, language) + "\"");
+        response.setContentLengthLong(file.getSize());
         try (OutputStream out = response.getOutputStream()) {
             IOHelper.copy(file.getFile(), out);
         }
@@ -164,7 +165,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         try {
             List<WFSAttachment> writtenFiles = new ArrayList<>(fileItems.size());
             for (FileItem f : fileItems) {
-                try (WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream())) {
+                try (WFSAttachmentFile file = new WFSAttachmentFile(f.getInputStream(), f.getSize())) {
                     String[] name = FileService.getBaseAndExtension(f.getName());
                     file.setFeatureId(name[0]);
                     file.setLayerId(layerId);
