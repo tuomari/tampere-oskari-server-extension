@@ -25,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -229,9 +228,13 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     }
 
     private String getContentType(String extension) {
-        try {
-            return MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("file." + extension);
-        } catch(Exception ignored) {
+        switch (extension) {
+        case "gpkg":
+            return "application/geopackage+sqlite3";
+        case "tif":
+            return "image/tiff";
+        case "las":
+        default:
             return "application/octet-stream";
         }
     }
