@@ -32,29 +32,6 @@
             href="/Oskari${path}/oskari.min.css" />
     <style type="text/css">
         @media screen {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            #mapdiv {
-                width: 100%;
-            }
-
-            #maptools {
-                background-color: #333438;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                width: 153px;
-                z-index: 2;
-            }
-
-            #contentMap {
-                height: 100%;
-                margin-left: 170px;
-            }
-
             #login {
                 margin-left: 5px;
             }
@@ -162,18 +139,7 @@
     </div>
 	<div id="tampere_vaakuna"><a href="http://tampere.fi/"><img src="/Oskari${path}/images/tre_vaakuna_vari1.svg"></a></div>
 </nav>
-<div id="contentMap" class="oskariui container-fluid">
-    <div id="menutoolbar" class="container-fluid"></div>
-    <div class="row-fluid oskariui-mode-content" style="height: 100%; background-color:white;">
-        <div class="oskariui-left"></div>
-        <div class="span12 oskariui-center" style="height: 100%; margin: 0;">
-            <div id="mapdiv"></div>
-        </div>
-        <div class="oskari-closed oskariui-right">
-            <div id="mapdivB"></div>
-        </div>
-    </div>
-</div>
+<div id="contentMap"></div>
 
 
 <!-- ############# Javascript ################# -->
