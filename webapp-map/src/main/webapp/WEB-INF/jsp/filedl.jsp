@@ -21,34 +21,9 @@
             href="/Oskari${path}/oskari.min.css"/>
 
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
-    <style type="text/css">
-        @media screen {
-            body {
-                margin : 0;
-                padding : 0;
-            }
-            #mapdiv {
-                width: 100%;
-            }
-            #contentMap {
-                height: 100%;
-            }
-        }
-    </style>
     <!-- ############# /css ################# -->
 </head>
-<body>
-<div id="contentMap" class="oskariui container-fluid published">
-    <div class="row-fluid" style="height: 100%; background-color:white;">
-        <div class="oskariui-left"></div>
-        <div class="span12 oskariui-center" style="height: 100%; margin: 0;">
-            <div id="mapdiv"></div>
-        </div>
-        <div class="oskari-closed oskariui-right">
-            <div id="mapdivB"></div>
-        </div>
-    </div>
-</div>
+<body id="oskari">
 
 
 <!-- ############# Javascript ################# -->
