@@ -12,7 +12,8 @@ import java.util.Optional;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 import org.w3c.dom.Document;
@@ -85,14 +86,28 @@ public class KtjPdfHandler extends RestActionHandler {
     }
 
     boolean hasPermission(User user) {
-        if (user.isGuest()) {
+        if (user == null || user.isGuest()) {
             return false;
         }
         Resource resource = getResource();
         if (resource == null) {
             return false;
         }
-        return resource.hasPermission(user, PermissionType.VIEW_LAYER);
+        return resource.getPermissions().stream()
+                .anyMatch(p -> matches(p, user));
+    }
+
+    private boolean matches(Permission p, User user) {
+        long id = p.getExternalId();
+        PermissionExternalType type = p.getExternalType();
+        switch (type) {
+        case ROLE:
+            return user.getRoles().stream().anyMatch(role -> role.getId() == id);
+        case USER:
+            return user.getId() == id;
+        default:
+            return false;
+        }
     }
 
     private Resource getResource() {
