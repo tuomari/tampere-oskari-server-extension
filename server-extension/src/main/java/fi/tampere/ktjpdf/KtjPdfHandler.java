@@ -53,15 +53,17 @@ public class KtjPdfHandler extends RestActionHandler {
     private static final String PROPERTY_KTJPDF_USERNAME = "ktjpdf.username";
     private static final String PROPERTY_KTJPDF_PASSWORD = "ktjpdf.password";
 
-    private static final String PROPERTY_KTJPDF_URL_KIINTEISTOREKISTERIOTE = "ktjpdf.url.kiinteistorekisteriote";
-    private static final String PROPERTY_KTJPDF_URL_LAINHUUTOTODISTUS = "ktjpdf.url.lainhuutotodistus";
+    private static final String PROPERTY_URL_KIINTEISTOREKISTERIOTE = "ktjpdf.url.kiinteistorekisteriote";
+    private static final String PROPERTY_URL_LAINHUUTOTODISTUS = "ktjpdf.url.lainhuutotodistus";
     private static final String PROPERTY_KTJPDF_URL_KARTTAOTE = "ktjpdf.url.karttaote";
 
     private static final String DEFAULT_URL_KIINTEISTOREKISTERIOTE = "https://ktjws.nls.fi/ktjkii/tuloste/kiinteistorekisteriote/rekisteriyksikko/pdf";
     private static final String DEFAULT_URL_LAINHUUTOTODISTUS = "https://ktjws.nls.fi/ktjkir/tuloste/lainhuutotodistus/pdf";
     private static final String DEFAULT_URL_KARTTAOTE = "https://ktjws.nls.fi/ktjkii/tuloste/karttaote/xml";
 
-    private static final String MML_REQUEST_HEADER_END_USER_ID = "enduserid";
+    private static final String PROPERTY_MML_REQUEST_HEADER_END_USER_ID = "ktjpdf.mml.header";
+
+    private static final String DEFAULT_MML_REQUEST_HEADER_END_USER_ID = "enduserid";
 
     private PermissionService permissionService;
 
@@ -111,7 +113,6 @@ public class KtjPdfHandler extends RestActionHandler {
     }
 
     private Resource getResource() {
-        // Check if user roles have VIEW_LAYER permission to configured layer
         Cache<Resource> cache = CacheManager.getCache(this.getClass().getName());
         String cacheKey = PropertyUtil.get(PROPERTY_KTJPDF_ROLE_LAYER_ID);
         Resource resource = cache.get(cacheKey);
@@ -151,12 +152,12 @@ public class KtjPdfHandler extends RestActionHandler {
     }
 
     private byte[] getKiinteistorekisteriote(User user, String kiinteistotunnus) throws ActionException {
-        String url = PropertyUtil.get(PROPERTY_KTJPDF_URL_KIINTEISTOREKISTERIOTE, DEFAULT_URL_KIINTEISTOREKISTERIOTE);
+        String url = PropertyUtil.get(PROPERTY_URL_KIINTEISTOREKISTERIOTE, DEFAULT_URL_KIINTEISTOREKISTERIOTE);
         return fetch(user, url, Collections.singletonMap("kiinteistotunnus", kiinteistotunnus));
     }
 
     private byte[] getLainhuutotodistus(User user, String kiinteistotunnus) throws ActionException {
-        String url = PropertyUtil.get(PROPERTY_KTJPDF_URL_LAINHUUTOTODISTUS, DEFAULT_URL_LAINHUUTOTODISTUS);
+        String url = PropertyUtil.get(PROPERTY_URL_LAINHUUTOTODISTUS, DEFAULT_URL_LAINHUUTOTODISTUS);
         return fetch(user, url, Collections.singletonMap("kohdetunnus", kiinteistotunnus));
     }
 
@@ -202,7 +203,9 @@ public class KtjPdfHandler extends RestActionHandler {
         try {
             String username = PropertyUtil.getNecessary(PROPERTY_KTJPDF_USERNAME);
             String password = PropertyUtil.getNecessary(PROPERTY_KTJPDF_PASSWORD);
-            Map<String, String> headers = Collections.singletonMap(MML_REQUEST_HEADER_END_USER_ID, getEndUserId(user));
+            String endUserIdHeader = PropertyUtil.get(PROPERTY_MML_REQUEST_HEADER_END_USER_ID, DEFAULT_MML_REQUEST_HEADER_END_USER_ID);
+            String endUserId = getEndUserId(user);
+            Map<String, String> headers = Collections.singletonMap(endUserIdHeader, endUserId);
             LOG.debug("Requesting", url, "with headers:", headers);
             HttpURLConnection c = IOHelper.getConnection(url, username, password, query, headers);
             return IOHelper.readBytes(c);
