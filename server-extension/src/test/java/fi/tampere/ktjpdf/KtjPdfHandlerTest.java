@@ -2,6 +2,7 @@ package fi.tampere.ktjpdf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,14 @@ public class KtjPdfHandlerTest {
 
         PropertyUtil.addProperty(KtjPdfHandler.PROPERTY_KTJPDF_ROLE_LAYER_ID, roleLayerId);
         assertTrue(h.hasPermission(user));
+    }
+
+    @Test
+    public void testShortFormat() {
+        assertEquals("837-999-0-1", KtjPdfHandler.toShortFormat("837-999-0000-0001"));
+        assertEquals("837-999-999-1", KtjPdfHandler.toShortFormat("837-999-999-1"));
+        assertEquals("837-999-1-1", KtjPdfHandler.toShortFormat("83799900010001"));
+        assertNull(KtjPdfHandler.toShortFormat("83799900010001M123"));
     }
 
     @Test

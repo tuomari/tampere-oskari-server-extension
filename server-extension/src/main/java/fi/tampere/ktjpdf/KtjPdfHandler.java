@@ -134,8 +134,53 @@ public class KtjPdfHandler extends RestActionHandler {
         String kiinteistotunnus = params.getRequiredParam(PARAM_KTUNNUS);
         User user = params.getUser();
 
+        kiinteistotunnus = toShortFormat(kiinteistotunnus);
+        if (kiinteistotunnus == null) {
+            throw new ActionParamsException("Invalid ktunnus");
+        }
+
         byte[] tuloste = getTuloste(user, doc, kiinteistotunnus);
         ResponseHelper.writeResponse(params, 200, "application/pdf", tuloste);
+    }
+
+    static String toShortFormat(String kiinteistotunnus) {
+        String a, b, c, d;
+
+        String[] parts = kiinteistotunnus.split("-");
+        if (parts.length == 1) {
+            if (parts[0].length() != 3+3+4+4) {
+                return null;
+            }
+            a = parts[0].substring(0, 3);
+            b = parts[0].substring(3, 6);
+            c = parts[0].substring(6, 10);
+            d = parts[0].substring(10, 14);
+        } else if (parts.length == 4) {
+            a = parts[0];
+            b = parts[1];
+            c = parts[2];
+            d = parts[3];
+        } else {
+            return null;
+        }
+
+        try {
+            int ia = Integer.parseInt(a);
+            int ib = Integer.parseInt(b);
+            int ic = Integer.parseInt(c);
+            int id = Integer.parseInt(d);
+
+            if (ia < 0 || ia > 999
+                    || ib < 0 || ib > 999
+                    || ic < 0 || ic > 9999
+                    || id < 0 || id > 9999) {
+                return null;
+            }
+
+            return String.format("%d-%d-%d-%d", ia, ib, ic, id);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
 
     private byte[] getTuloste(User user, String doc, String kiinteistotunnus) throws ActionException {
