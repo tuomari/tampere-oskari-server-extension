@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tampere-parent</artifactId>
         <groupId>fi.tampere.oskari</groupId>
-        <version>1.10.1</version>
+        <version>1.11.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -88,6 +88,14 @@
       	</dependency>
         
         <!-- /oskari -->
+
+        <!-- oskari-extensions -->
+        <dependency>
+            <groupId>fi.nls.oskari.extras</groupId>
+            <artifactId>service-terrain-profile</artifactId>
+            <version>${terrain.profile.version}</version>
+        </dependency>
+        <!-- /oskari-extensions -->
 
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -26,7 +26,6 @@ public class FileServiceMybatisImpl extends FileService {
     }
 
     public FileServiceMybatisImpl(DataSource ds) {
-        super();
         if (ds == null) {
             LOG.warn("DataSource was null, all future calls will throw NPEs!");
             factory = null;
@@ -42,8 +41,7 @@ public class FileServiceMybatisImpl extends FileService {
             FileMapper mapper = session.getMapper(MAPPER);
             mapper.insertFile(file);
             LOG.info("DB insert complete");
-            // save to filesystem
-            WFSAttachment attachment = super.insertFile(file);
+            WFSAttachment attachment = insertFileToDisk(file);
             LOG.info("File write done");
             session.commit();
             LOG.info("Committed");
@@ -69,20 +67,23 @@ public class FileServiceMybatisImpl extends FileService {
         return new ArrayList<>(layerIds);
     }
 
+    @Override
     public List<WFSAttachment> getFiles(int layerId) {
         try (SqlSession session = factory.openSession()) {
             return session.getMapper(MAPPER).findByLayer(layerId);
         }
     }
 
+    @Override
     public List<WFSAttachment> getFiles(int layerId, String featureId) {
         try (SqlSession session = factory.openSession()) {
             return session.getMapper(MAPPER).findByLayerAndFeature(layerId, featureId);
         }
     }
 
+    @Override
     public WFSAttachmentFile getFile(int layerId, int fileId) throws ServiceException {
-        WFSAttachmentFile file = super.getFile(layerId, fileId);
+        WFSAttachmentFile file = getFileFromDisk(layerId, fileId);
         try (SqlSession session = factory.openSession()) {
             WFSAttachment metadata = session.getMapper(MAPPER).findFile(fileId);
             file.setFeatureId(metadata.getFeatureId());
@@ -92,11 +93,11 @@ public class FileServiceMybatisImpl extends FileService {
         }
     }
 
+    @Override
     public WFSAttachment removeFile(int layerId, int fileId) throws ServiceException {
         try (SqlSession session = factory.openSession()) {
             WFSAttachment metadata = session.getMapper(MAPPER).findFile(fileId);
-            // remove from disk
-            WFSAttachment file = super.removeFile(layerId, fileId);
+            WFSAttachment file = removeFileFromDisk(layerId, fileId);
             file.setFeatureId(metadata.getFeatureId());
             file.setLocale(metadata.getLocale());
             file.setFileExtension(metadata.getFileExtension());
