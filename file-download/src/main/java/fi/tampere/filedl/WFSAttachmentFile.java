@@ -6,20 +6,21 @@ import java.io.InputStream;
 
 public class WFSAttachmentFile extends WFSAttachment implements Closeable {
 
-    private InputStream file;
+    private final InputStream file;
+    private final long size;
 
-    public WFSAttachmentFile(InputStream file) {
+    public WFSAttachmentFile(InputStream file, long size) {
         this.file = file;
+        this.size = size;
     }
 
     public InputStream getFile() {
         return file;
     }
 
-    public void setFile(InputStream in) {
-        file = in;
+    public long getSize() {
+        return size;
     }
-
 
     @Override
     public void close() throws IOException {
