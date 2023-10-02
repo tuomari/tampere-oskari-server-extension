@@ -52,10 +52,12 @@ public class WFSAttachmentsHandler extends RestActionHandler {
     private static final String PARAM_LAYER_JSON = "json";
 
     private FileService service;
+    private FileDownloadAccessLogService accessLog;
 
     public void init() {
         super.init();
         service = new FileServiceMybatisImpl();
+        accessLog = new FileDownloadAccessLogServiceMybatisImpl();
     }
 
     public void handleGet(ActionParameters params) throws ActionException {
@@ -71,10 +73,11 @@ public class WFSAttachmentsHandler extends RestActionHandler {
         if (fileId != -1) {
             try (WFSAttachmentFile file = service.getFile(layerId, fileId)) {
                 writeFileResponse(file, params.getResponse(), params.getLocale().getLanguage());
-                return;
             } catch (IOException | ServiceException e) {
                 throw new ActionException("Error reading file", e);
             }
+            accessLog.logFileRead(params.getUser(), layerId, fileId);
+            return;
         }
         String featureId = params.getHttpParam("featureId");
         String externalFile = params.getHttpParam("name");
@@ -92,6 +95,7 @@ public class WFSAttachmentsHandler extends RestActionHandler {
                         errored(getName());
                 ResponseHelper.writeError(params, "File not found", HttpServletResponse.SC_NOT_FOUND);
             }
+            accessLog.logExternalFileRead(params.getUser(), layerId, featureId, externalFile);
             return;
         }
 
