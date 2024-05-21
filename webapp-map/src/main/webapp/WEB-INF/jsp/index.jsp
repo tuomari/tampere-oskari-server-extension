@@ -13,12 +13,12 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/icons.css"/>
+            href="${clientDomain}/Oskari${path}/icons.css"/>
 
             <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/oskari.min.css" />
+            href="${clientDomain}/Oskari${path}/oskari.min.css" />
     <style type="text/css">
         @media screen {
             #login {
@@ -81,7 +81,7 @@
 <body>
 
 <nav id="maptools">
-    <div id="tampere"><a href="https://kartat.tampere.fi/"><img src="/Oskari${path}/images/tre_kartat_fi.svg"></a></div>
+    <div id="tampere"><a href="https://kartat.tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_kartat_fi.svg"></a></div>
     <div id="loginbar">
     </div>
     <div id="menubar">
@@ -126,7 +126,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-	<div id="tampere_vaakuna"><a href="http://tampere.fi/"><img src="/Oskari${path}/images/tre_vaakuna_vari1.svg"></a></div>
+	<div id="tampere_vaakuna"><a href="http://tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_vaakuna_vari1.svg"></a></div>
 </nav>
 <div id="contentMap"></div>
 
@@ -141,15 +141,15 @@
 </script>
 <%-- Pre-compiled application JS, empty unless created by build job --%>
 <script type="text/javascript"
-        src="/Oskari${path}/oskari.min.js">
+        src="${clientDomain}/Oskari${path}/oskari.min.js">
 </script>
 <%--language files --%>
 <script type="text/javascript"
-        src="/Oskari${path}/oskari_lang_${language}.js">
+        src="${clientDomain}/Oskari${path}/oskari_lang_${language}.js">
 </script>
 
 <script type="text/javascript"
-        src="/Oskari${path}/index.js">
+        src="${clientDomain}/Oskari${path}/index.js">
 </script>
 
 
