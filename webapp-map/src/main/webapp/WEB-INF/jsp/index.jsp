@@ -6,6 +6,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Oskari - ${viewName}</title>
 		
@@ -21,6 +24,19 @@
             href="${clientDomain}/Oskari${path}/oskari.min.css" />
     <style type="text/css">
         @media screen {
+            body {
+                margin: 0;
+                padding: 0;
+
+                height: 100vh;
+                width: 100%;
+            }
+            #oskari {
+                /* for application to set */
+                height: 100%;
+                width: 100%;
+            }
+
             #login {
                 margin-left: 5px;
             }
@@ -28,7 +44,7 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("/Oskari/${version}/resources/images/forms/input_shadow.png");
+                background-image: url("${clientDomain}/Oskari/${version}/resources/images/forms/input_shadow.png");
                 background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;
@@ -59,8 +75,23 @@
                 color: #FFF;
                 padding: 5px;
             }
-			
-		    #tampere_vaakuna{
+            nav#maptools select {
+                max-width: 85%;
+                margin: 10px;
+            }
+
+        }
+        @media only screen (min-width: 768px) {
+            #login input {
+                font: 16px/100% Arial,sans-serif;
+            }
+        }
+    </style>
+
+    <!-- ############# /css ################# -->
+    <style type="text/css">
+        @media screen {
+            #tampere_vaakuna{
                 position: absolute;
                 bottom: 0px;
                 width: 100%;
@@ -80,56 +111,64 @@
 </head>
 <body>
 
-<nav id="maptools">
-    <div id="tampere"><a href="https://kartat.tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_kartat_fi.svg"></a></div>
-    <div id="loginbar">
-    </div>
-    <div id="menubar">
-    </div>
-    <div id="divider">
-    </div>
-    <div id="toolbar">
-    </div>
-    <div id="login">
-        <c:choose>
-            <c:when test="${!empty loginState}">
-                <p class="error"><spring:message code="invalid_password_or_username" text="Invalid password or username!" /></p>
-            </c:when>
-        </c:choose>
-         <c:choose>            
-            <%-- If logout url is present - so logout link --%>
-            <c:when test="${!empty _logout_uri}">
-                <form action="${pageContext.request.contextPath}${_logout_uri}" method="POST" id="logoutform">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <a href="${pageContext.request.contextPath}${_logout_uri}" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
-                </form>
-            </c:when>
-            <%-- Otherwise show appropriate logins --%>
-            <c:otherwise>
-                <c:set var="userIp" value="${header['X-FORWARDED-FOR']}" />           
-                <%-- test start --%>
-                <c:choose>
-                    <c:when test="${fn:startsWith(userIp,'10.')}">
-                        <a href="${pageContext.request.contextPath}/auth">Kirjaudu TRE tunnuksilla</a><hr />
-                    </c:when>
-                </c:choose>
-                <c:if test="${!empty param.login}">
-                    <form action='${pageContext.request.contextPath}/j_security_check' method="post" accept-charset="UTF-8">
-                        <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
-                                required>
-                        <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input type="submit" id="submit" value="Log in">
-                    </form>
-                </c:if>
-                <%-- test end --%>                
-            </c:otherwise>
-        </c:choose>
-    </div>
-	<div id="tampere_vaakuna"><a href="http://tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_vaakuna_vari1.svg"></a></div>
-</nav>
-<div id="contentMap"></div>
+<div id="oskari">
+    <!--
+         By default Oskari renders to container with id "oskari" or if one is not found to body element directly.
+         Nav element needs to be in base-HTML for now. We should consider creating nav element in JS-code like div#contentMap etc currently is-
+         TODO: frontend should generate this as well. An empty element with id="oskari" or similar should be enough.
+     -->
 
+    <nav id="maptools">
+        <div id="tampere"><a href="https://kartat.tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_kartat_fi.svg"></a></div>
+        <div id="loginbar">
+        </div>
+        <div id="logobar">
+            <!-- Container for logo TODO: move it to JS -->
+        </div>
+        <div id="menubar">
+            <!-- Container for menu items or "tiles" from bundles -->
+        </div>
+
+        <div id="toolbar">
+        </div>
+        <!-- More app-specific stuff TODO: move it to JS  -->
+        <div id="login">
+            <c:choose>
+                <c:when test="${!empty loginState}">
+                    <p class="error"><spring:message code="invalid_password_or_username" text="Invalid password or username!" /></p>
+                </c:when>
+            </c:choose>
+            <c:choose>
+                <%-- If logout url is present - so logout link --%>
+                <c:when test="${!empty _logout_uri}">
+                    <form action="${pageContext.request.contextPath}${_logout_uri}" method="POST" id="logoutform">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <a href="${pageContext.request.contextPath}${_logout_uri}" style="color: #ffffff;" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
+                    </form>
+                </c:when>
+                <%-- Otherwise show appropriate logins --%>
+                <c:otherwise>
+                    <c:set var="userIp" value="${header['X-FORWARDED-FOR']}" />
+                    <c:if test="${!empty param.login || fn:startsWith(userIp, '10.')}">
+                        <a href="${pageContext.request.contextPath}/oauth2">Kirjaudu TRE tunnuksilla</a><hr />
+                    </c:if>
+                    <c:if test="${!empty param.login}">
+                        <form action='${pageContext.request.contextPath}/j_security_check' method="post" accept-charset="UTF-8">
+                            <input size="16" id="username" name="j_username" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
+                                required>
+                            <input size="16" id="password" name="j_password" type="password" placeholder="<spring:message code="password" text="Password" />" required>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
+                        </form>
+                    </c:if>
+                    <%-- test end --%>
+                </c:otherwise>
+            </c:choose>
+        </div>
+	    <div id="tampere_vaakuna"><a href="http://tampere.fi/"><img src="${clientDomain}/Oskari${path}/images/tre_vaakuna_vari1.svg"></a></div>
+    </nav>
+    <div id="contentMap"></div>
+</div>
 
 <!-- ############# Javascript ################# -->
 

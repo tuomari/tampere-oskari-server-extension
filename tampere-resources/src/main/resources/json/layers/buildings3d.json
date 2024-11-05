@@ -2,7 +2,7 @@
   "type":"tiles3dlayer",
   "url":"https://kartat.tampere.fi/cesium_web/tilesets/RAKENNUKSEN_OSAT/tileset.json",
   "name":"tre_buildings_3d",
-  "organization": "Tampereen kaupunki",
+  "organization": "",
   "inspiretheme": "Rakennukset",
   "srs_name": "EPSG:3857",
   "locale": {
