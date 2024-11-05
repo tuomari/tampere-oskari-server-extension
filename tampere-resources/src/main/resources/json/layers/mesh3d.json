@@ -2,7 +2,7 @@
   "type":"tiles3dlayer",
   "url":"https://kartat.tampere.fi/cesium_web/tilesets/Tampere_2018_Blom/Tampere_Cesium_2018.json",
   "name":"tre_mesh_3d",
-  "organization": "Tampereen kaupunki",
+  "organization": "",
   "inspiretheme": "Rakennukset",
   "srs_name": "EPSG:3857",
   "locale": {

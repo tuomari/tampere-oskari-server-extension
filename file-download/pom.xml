@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>file-download</artifactId>
-    <name>Tampere server extension</name>
+    <name>Tampere FileDownload extension</name>
 
     <dependencies>
         <dependency>

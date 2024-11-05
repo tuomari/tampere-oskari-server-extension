@@ -6,8 +6,6 @@
     <meta name="description" content="Tampereen avoimien aineistojen latauspalvelu" />
     <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <!-- IE 9 polyfill for openlayers 3 - https://github.com/openlayers/ol3/issues/4865 -->
-    <!--[if lte IE 9]> <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList"></script> <![endif]-->
 
     <!-- ############# css ################# -->
     <link
