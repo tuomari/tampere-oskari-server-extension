@@ -154,7 +154,7 @@ public class OskariOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     }
 
     private User copyInfoToUser(User user, DefaultOidcUser oidcUser) {
-        user.setEmail(oidcUser.getEmail());
+        user.setEmail(oidcUser.getEmail().toLowerCase());
         // If user has no given and family names set, it is still possible that they
         // have full name. Fallback to use it as firstname
         if ((oidcUser.getGivenName() == null || oidcUser.getGivenName().isBlank()) &&
