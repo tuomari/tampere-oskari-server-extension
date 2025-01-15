@@ -141,6 +141,8 @@ public class OskariOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         HttpSession session = request.getSession(true);
         synchronized (session) {
             session.setAttribute(User.class.getName(), authenticatedUser);
+            // Invalidate session after 10 hours, ie one workday
+            session.setMaxInactiveInterval(10*60*60);
         }
     }
 
